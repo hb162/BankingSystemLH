@@ -1,10 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-</head>
-<body>
-
-</body>
-</html>
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Rút tiền {% endblock %}
+{% block content %}
+    <div class="container-fluid">
+        <form method="post">
+            {% csrf_token %}
+            <h1>Giao dịch rút tiền</h1>
+            <div class="form-group"></div>
+            <h1>Giao dịch rút tiền</h1>
+            <h1>Giao dịch rút tiền</h1>
+        </form>
+    </div>
+{% endblock %}

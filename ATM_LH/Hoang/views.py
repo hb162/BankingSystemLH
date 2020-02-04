@@ -15,8 +15,6 @@ from django.utils import timezone
 # def IndexView(request):
 #     return render(request, 'index.html')
 
-
-@login_required
 def dashboard_view(request):
     return render(request, 'dashboard.html')
 
@@ -36,7 +34,6 @@ def signup_view(request):
         today = datetime.date.today()
         birth = datetime.datetime.strptime(bday, "%Y-%m-%d").date()
         age = (today - birth).days / 365
-        ctg = Branch.objects.filter(branch_id=branch).first()
         try:
             if Customer.objects.filter(email=email).first():
                 messages.error(request, 'Email đã tồn tại')
@@ -51,10 +48,19 @@ def signup_view(request):
                 messages.error(request, 'Khách hàng chưa đủ tuổi để đăng kí')
                 return render(request, 'register.html')
             else:
-                Customer.objects.create(full_name=full_name,
-                                        birthday=birth, gender=gender, address=address, phone_number=phone_number,
-                                        email=email, id_type=id_type, id_no=id_no, branch_id=ctg)
                 max_number = 9999999
+                i = random.randint(0, max_number)
+                i = str(i)
+                Customer.objects.create(customer_id='KH' + i,
+                                        full_name=full_name,
+                                        birthday=birth,
+                                        gender=gender,
+                                        address=address,
+                                        phone_number=phone_number,
+                                        email=email,
+                                        id_type=id_type,
+                                        id_no=id_no,
+                                        branch_id=branch)
                 account_number = random.randint(0, max_number)
                 get_customer = Customer.objects.filter(id_no=id_no).first()
                 Account.objects.create(account_no=account_number, password='1', limit=100000000, balance=50000,
@@ -73,7 +79,7 @@ def login_view(request):
         password1 = request.POST['pas']
         if Account.objects.filter(account_no=username1, password=password1).exists():
             request.session['usr'] = username1
-            return render(request, 'dashboard.html')
+            return redirect('dashboard')
         else:
             messages.error(request, "sai tên đăng nhập hoặc mật khẩu")
             return render(request, 'login.html')
@@ -127,9 +133,13 @@ def withdrawal_view(request):
     return render(request, 'withdrawal.html')
 
 
-# def another_view(request):
-#     if request.method == "POST":
-#         rut = withdrawal_view(request)
-#         return render(request, 'another_value.html')
-#     else:
-#         return render(request, 'another_value.html')
+def open_card(request):
+    return render(request, 'open_card.html')
+
+
+def transfer_internal(request):
+    return render(request, 'transfer_internal.html')
+
+
+def transfer_external(request):
+    return render(request, 'transfer_external.html')
