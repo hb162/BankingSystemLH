@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}
+	Trang chủ
+{% endblock title %}
+
+{% block content %}
+	<h1>Trang chủ</h1>
+    <div class="p-2" style="color:#005cbf">
+        <h5>Chào <strong>{{request.user.username}}</strong></h5>
+    </div>
+{% endblock content %}
+{% block dashboard %}
+    <div>
+        <input class="btn btn-success" value="Mở thẻ ngân hàng " onclick="location.href='{% url 'open_card' %}'">
+    </div>
+    <br>
+    <div>
+        <input class="btn btn-success" value="Mở tài khoản ngân hàng " onclick="location.href='{% url 'open_account' %}'">
+    </div>
+{% endblock %}

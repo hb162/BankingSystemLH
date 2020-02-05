@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        .form_open{
+            border-style: solid;
+            border-color: #000000;
+            color: #ffeeba;
+            margin: fill;
+            padding: auto;
+            text-align: center;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    {% block title %}
+            Mở tài khoản
+    {% endblock %}
+
+    {% block content %}
+        <h2>Mở thêm tài khoản </h2>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{% url 'open_account' %}">
+        {% csrf_token %}
+        <div>
+            <div>
+                <span>
+                    <label>
+                        <h4> Loại giấy tờ </h4>
+                    </label>
+                </span>
+            </div>
+            <div>
+                <select>
+                    <option value="CMND">-------------Lựa chọn---------</option>
+                    <option value="CMND">Chứng minh nhân dân</option>
+                    <option value="TCC">Thẻ căn cước</option>
+                    <option value="HC">Hộ chiếu</option>
+                </select>
+            </div>
+            <br>
+        <div>
+            <span>
+            <label>
+                <h4> Số thẻ </h4>
+            </label>
+        </span>
+            <div>
+                <input  placeholder="Số thẻ " type="number" name="id_no">
+            </div>
+        </div>
+    </div>
+        <br>
+        <button type="submit">Đăng ký </button>
+    </form>
+        <div class="golink">
+        <a href="{% url 'home' %}">Trang chủ</a>
+    </div>
+    {% endblock %}
+</body>
+</html>

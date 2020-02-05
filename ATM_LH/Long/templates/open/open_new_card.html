@@ -1,0 +1,95 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        .form_open{
+            border-style: solid;
+            border-color: #000000;
+            color: #ffeeba;
+            margin: fill;
+            padding: auto;
+            text-align: center;
+            width: auto;
+        }
+    </style>
+</head>
+<body>
+    {% block title %}
+            Mở thẻ
+    {% endblock %}
+
+    {% block content %}
+        <h2>Mở thêm thẻ</h2>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endif %}
+            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                <div class="alert alert-success">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+    <form method="post" action="{% url 'open_card' %}">
+        {% csrf_token %}
+        <div>
+            <div>
+            <span>
+            <label>
+                <h4> Số tài khoản </h4>
+            </label>
+        </span>
+            <div>
+                <input type="text" name="id_account">
+            </div>
+
+        </div>
+
+        <div>
+            <span>
+            <label>
+                <h4> Họ và tên </h4>
+            </label>
+        </span>
+            <div>
+                <input type="text" name="customer_name">
+            </div>
+        </div>
+
+        <div>
+            <span>
+            <label>
+                <h4> Lựa chọn loại giấy tờ</h4>
+            </label>
+        </span>
+            <div style="color: #1b1e21">
+                <input type="radio" name="card_type" value="1">
+                <label>Thẻ tín dụng</label>
+                <input type="radio" name="card_type" value="2">
+                <label>Thẻ ATM</label>
+                <input type="radio" name="card_type" value="3">
+                <label>Thẻ ghi nợ</label>
+                <input type="radio" name="card_type" value="4">
+                <label>Thẻ đảm bảo</label>
+                <input type="radio" name="card_type" value="5">
+                <label>Thẻ Visa</label>
+            </div>
+        </div>
+    </div>
+            <button type="submit">Đăng ký </button>
+    </form>
+        <div class="golink">
+        <a href="{% url 'home' %}">Trang chủ</a>
+    </div>
+    {% endblock %}
+</body>
+</html>
