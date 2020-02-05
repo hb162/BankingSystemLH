@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Thông tin khách hàng{% endblock %}
+{% block content %}
+<div class="container">
+    <form class="withdrawal text-center">
+        {% csrf_token %}
+        <h1 class="display-4">Thông tin khách hàng</h1>
+        <hr>
+        <div class="form-group">
+            <label>Tên khách hàng:</label>
+            {{ customer }}
+        </div>
+        <div class="form-group">
+            <label>Số tài khoản:</label>
+            {{ usr }}
+        </div>
+        <div class="form-group">
+            <label>Số dư tài khoản:</label>
+            {{ balance }} VNĐ
+        </div>
+        <div class="form-group">
+            <label>Ngày tạo:</label>
+            {{ create_day }}
+        </div>
+        <div class="form-group">
+            <label>Ngày hết hạn:</label>
+            {{ end_day }}
+        </div>
+    </form>
+</div>
+{% endblock %}

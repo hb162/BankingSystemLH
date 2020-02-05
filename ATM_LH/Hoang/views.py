@@ -5,18 +5,12 @@ import random
 from django.views import View
 from datetime import timedelta
 import datetime
+from django.contrib.auth import logout
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.decorators import login_required
 from Long.models import ATM, Branch, Bank
 from Hoang.models import Account, Customer, Transaction
 from django.utils import timezone
-
-
-# def IndexView(request):
-#     return render(request, 'index.html')
-
-def dashboard_view(request):
-    return render(request, 'dashboard.html')
 
 
 def signup_view(request):
@@ -87,6 +81,45 @@ def login_view(request):
         return render(request, 'login.html')
 
 
+def logout_view(request):
+    try:
+        del request.session['usr']
+    except:
+        pass
+    return redirect('login')
+
+
+def base_view(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+    return render(request, 'base.html', {'usr': usr})
+
+
+def dashboard_view(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+    return render(request, 'dashboard.html', {'usr': usr})
+
+
+def profile_view(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+        acc = Account.objects.get(account_no=usr)
+        customer_id = acc.customer_id
+        balance = acc.balance
+        create_day = acc.create_day
+        end_day = acc.end_day
+        customer = Customer.objects.get(customer_id=customer_id).full_name
+        context = {
+            'usr': usr,
+            'customer': customer,
+            'balance': balance,
+            'create_day': create_day,
+            'end_day': end_day,
+        }
+    return render(request, 'profile.html', context)
+
+
 def withdrawal_view(request):
     if request.session.has_key('usr'):
         usr = request.session['usr']
@@ -99,19 +132,19 @@ def withdrawal_view(request):
             try:
                 if amount % 10000 != 0:
                     messages.error(request, "Số tiền phải là bội số của 10000")
-                    return render(request, 'withdrawal.html')
+                    return render(request, 'withdrawal.html', {'usr': usr})
                 elif amount == 0:
                     messages.error(request, "Số tiền không được bằng 0")
-                    return render(request, 'withdrawal.html')
+                    return render(request, 'withdrawal.html', {'usr': usr})
                 elif account.balance - amount <= 49000:
                     messages.error(request, 'Tài khoản không đủ tiền')
-                    return render(request, 'withdrawal.html')
+                    return render(request, 'withdrawal.html', {'usr': usr})
                 elif atm.atm_balance < amount or atm.atm_balance - amount < 0:
                     messages.error(request, 'Số tiền của cây ATM không đủ')
-                    return render(request, 'withdrawal.html')
+                    return render(request, 'withdrawal.html', {'usr': usr})
                 elif amount > account.limit:
                     messages.error(request, "Số tiền không được lớn hơn hạn mức")
-                    return render(request, "withdrawal.html")
+                    return render(request, "withdrawal.html", {'usr': usr})
                 else:
                     account.balance = account.balance - amount - 1000
                     atm.atm_balance = atm.atm_balance - amount
@@ -129,17 +162,23 @@ def withdrawal_view(request):
             except:
                 return HttpResponse('Số tiền méo đúng rùi!')
         else:
-            return render(request, 'withdrawal.html')
-    return render(request, 'withdrawal.html')
+            return render(request, 'withdrawal.html', {'usr': usr})
+        return render(request, 'withdrawal.html')
 
 
 def open_card(request):
-    return render(request, 'open_card.html')
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+    return render(request, 'open_card.html', {'usr': usr})
 
 
 def transfer_internal(request):
-    return render(request, 'transfer_internal.html')
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+    return render(request, 'transfer_internal.html', {'usr': usr})
 
 
 def transfer_external(request):
-    return render(request, 'transfer_external.html')
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+    return render(request, 'transfer_external.html', {'usr': usr})

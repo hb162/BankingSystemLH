@@ -46,12 +46,13 @@
                 </li>
             </ul>
         </div>
-        <
+        <p class="navbar-text">Xin chào {{ usr }}, <a href="{% url 'profile' %}">Tài khoản</a>,
+            <a href="{% url 'logout' %}">Đăng xuất</a></p>
     </nav>
     <br>
-    {% block content %}{% endblock %}
+{% block content %}{% endblock %}
 
-    <!-- Footer -->
+<!-- Footer -->
     <footer>
         <div class="container-fluid padding">
             <div class="row text-center">
@@ -66,20 +67,20 @@
                     <hr class="light">
                     <h5>Giờ làm việc</h5>
                     <hr class="light">
-                    <p>Thứ 2 - Thứ 6: 8am-5pm</p>
-                    <p>Thứ 7: 8am-11am</p>
+                    <p>Thứ 2 - Thứ 6: 8am - 5pm</p>
+                    <p>Thứ 7: 8am - 11am</p>
                     <p>Nghỉ chủ nhật</p>
                 </div>
-                 <div class="col-md-4">
+                <div class="col-md-4">
                     <hr class="light">
                     <h5>Chi nhánh</h5>
                     <hr class="light">
                     <p>96 Cầu Giấy, Hà Nội</p>
-                     <p>696 Đống Đa, Hà Nội</p>
-                     <p>969 Q1, TP.HCM</p>
-                     <p>99 Q7, TP.HCM</p>
-                     <p>996 Ngô Quyền, Hải Phòng</p>
-                 </div>
+                    <p>696 Đống Đa, Hà Nội</p>
+                    <p>969 Q1, TP.HCM</p>
+                    <p>99 Q7, TP.HCM</p>
+                    <p>996 Ngô Quyền, Hải Phòng</p>
+                </div>
                 <div class="col-12">
                     <hr class="light">
                     <h5>&copy; ABC.com</h5>
