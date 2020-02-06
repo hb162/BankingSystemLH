@@ -10,11 +10,28 @@
     </div>
 {% endblock content %}
 {% block dashboard %}
-    <div>
-        <input class="btn btn-success" value="Mở thẻ ngân hàng " onclick="location.href='{% url 'open_card' %}'">
+    <div class="btn-group">
+        <button type="button" class="btn btn-success" value="Mở thẻ ngân hàng" onclick="location.href='{% url 'open_card' %}'">
+        Mở thẻ ngân hàng</button>
+        <button type="button" class="btn btn-success" value="Mở tài khoản ngân hàng" onclick="location.href='{% url 'open_account' %}'">
+        Mở tài khoản ngân hàng</button>
+        <button type="button" class="btn btn-success" value="Mở tài khoản ngân hàng" onclick="location.href='{% url 'search_customer' %}'">
+        Khách hàng</button>
     </div>
-    <br>
-    <div>
-        <input class="btn btn-success" value="Mở tài khoản ngân hàng " onclick="location.href='{% url 'open_account' %}'">
-    </div>
+{% endblock %}
+{% block customer_result %}
+    <form method="get" action="{% url 'search_customer' %}">
+        <div class="row">
+            <input type="text" name="Q" placeholder="Search" class="form-control col-sm-3 col-md-3 col-lg-3" value="{{ request.GET.Q}}">
+            <input type="submit" class="btn btn-primary btn-sm" value="Search">
+        </div>
+    </form>
+    {% for object in object_customer %}
+            <div class="container">
+                <div class="row">
+                    {{ object.full_name }}
+                </div>
+            </div>
+    {% endfor %}
+
 {% endblock %}

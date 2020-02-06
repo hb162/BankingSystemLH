@@ -1,15 +1,92 @@
 {% extends 'base.html' %}
-{% block title %}
-    Khach hang
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <style>
+        .table-position{
+            margin: fill;
+        }
+    </style>
+</head>
+<body>
+    {% block title %}
+    Khách hàng
 {% endblock %}
-
 {% block content %}
-    <h3>Khach hang</h3>
-{% endblock %}
+    <div class="row">
+        <div class="col-sm-3 col-md-3 col-lg-3 text-info"><h3>Khách hàng</h3></div>
+        <div class="col-sm-5 col-md-5 col-lg-5"></div>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success">Thêm khách hàng</button>
+                <button type="button" class="btn btn-warning">In danh sách</button>
+            </div>
+        </div>
+    </div>
+    <br>
+    <form method="get" action="{% url 'search_customer' %}">
+        <div class="row">
+            <div class="col col-sm-2 col-md-2 col-lg-2"></div>
+            <input type="text" name="Q" placeholder="Tìm kiếm khách hàng.." class="form-control col-sm-3 col-md-8 col-lg-8" value="{{ request.GET.Q}}">
+            <input type="submit" class="btn btn-primary btn-sm" value="Tìm kiếm">
+        </div>
+    </form>
+    <br>
+    <form>
+{#        chua biet viet j#}
+    </form>
+    <div class="row">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-sm-12 col-md-12 col-lg-12">
+                {% if object_customer %}
+            <div class="container">
+                <div class="row">
+                    <table class="table table-hover table-position table-bordered" width="20%">
+                        <thead class="thead-light">
+                            <tr>
+                                <th scope="col">Mã khách hàng</th>
+                                <th scope="col">Họ tên</th>
+                                <th scope="col">Ngày sinh </th>
+                                <th scope="col">Giới tính</th>
+                                <th scope="col">Địa chỉ</th>
+                                <th scope="col">Số điện thoại</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Chỉnh sửa</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for object in object_customer %}
+                                <tr>
+                                    <td>{{ object.customer_id }}</td>
+                                    <td>{{ object.full_name }}</td>
+                                    <td>{{ object.birthday }}</td>
+                                    {% if object.gender == 'M' %}
+                                        <td>Nam</td>
+                                        {% else %}
+                                            <td>Nữ</td>
+                                    {% endif %}
+                                    <td>{{ object.address }}</td>
+                                    <td>{{ object.phone_number }}</td>
+                                    <td>{{ object.email }}</td>
+                                    <td><button type="button">Edit</button></td>
+                                </tr>
+                            {% endfor %}
 
-{% block customer_result %}
-    <input type="text" placeholder="Search">
-    {% if request.GET %}
-    
-    {% endif %}    
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+    {% endif %}
+            </div>
+        </div>
+    </div>
+    </div>
 {% endblock %}
+</body>
+</html>
+

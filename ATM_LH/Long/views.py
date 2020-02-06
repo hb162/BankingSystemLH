@@ -7,12 +7,16 @@ from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from Hoang.models import Account, Card, Customer
+from Long.models import Employee
 import random
 import datetime
 from datetime import timedelta
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib import messages
+from django.db import models
+from django.core.paginator import Paginator
 import string
+
 # Create your views here.
 
 
@@ -113,22 +117,26 @@ def search_customer_anythings(request):
         query = request.GET.get('Q')
         if query:
             object_customer = object_customer.filter(
-                Q(full_name__icontains=query) |
-                Q(address__icontains=query) |
-                Q(gender__icontains=query) |
+                Q(full_name__contains=query) |
+                Q(address__contains=query) |
+                Q(gender__contains=query) |
                 Q(email__contains=query) |
-                Q(phone_number__exact=query))
-            return render(request, 'customer/customer_result.html', {'query': query})
+                Q(phone_number__exact=query)).distinct()
+            return render(request, 'customer/customer_result.html', {'object_customer': object_customer})
         else:
             return render(request, 'customer/customer_result.html', {'object_customer': object_customer})
-
-
-def find_customer(request):
-    if request.method == 'POST':
-        full_name = request.POST['full_name']
-        birthday = request.POST['birthday']
-        gender = request.POST['gender']
-        phone = request.POST['phone']
-        address = request.POST['address']
-        email = request.POST['email']
-
+#
+# def customer_post(request):
+#     template = 'home.html'
+#     query = request.GET.get('q')
+#     result = Customer.objects.filter(
+#         Q(full_name__icontains=query) |
+#         Q(address__icontains=query) |
+#         Q(gender__icontains=query) |
+#         Q(email__icontains=query) |
+#         Q(phone_number__exact=query)).distinct()
+#     pages = Paginator(request, result, 1)
+#     context = {
+#         'items': pages[0],
+#         'page_rage': pages[1],
+#     }

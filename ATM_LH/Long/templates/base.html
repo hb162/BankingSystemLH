@@ -18,13 +18,16 @@
 <body>
     {% include "includes/navar.html" %}
     <main class="container">
+        {% block customer_result %}
+
+        {% endblock %}
     	{% block content %}
 
     	{% endblock content %}
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
-    {% block dashboard %}
+        {% block dashboard %}
 
-    {% endblock %}
+        {% endblock %}
     </main>
     {% block scripts %}{% endblock scripts %}
 </body>
