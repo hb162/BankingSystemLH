@@ -1,9 +1,8 @@
 from django.db import models
-from django.db.models import Q
 
 
 class Province(models.Model):
-    province_id = models.CharField(max_length=2, unique=True)
+    province_id = models.CharField(max_length=5, unique=True)
     province_name = models.TextField()
 
     def __str__(self):
@@ -18,13 +17,13 @@ class Bank(models.Model):
     branches = models.ManyToManyField(Province, through="Branch")
 
     def __str__(self):
-        return self.bank_name, self.bank_id
+        return '{}{}'.format(self.bank_name, self.bank_id)
 
 
 class Branch(models.Model):
     province = models.ForeignKey(Province, to_field='province_id', on_delete=models.CASCADE)
-    bank = models.ForeignKey(Bank, to_field='bank_id', on_delete=models.CASCADE)
-    branch_id = models.CharField(max_length=5, primary_key=True)
+    bank_id = models.ForeignKey(Bank, to_field='bank_id', on_delete=models.CASCADE)
+    branch_id = models.CharField(max_length=5, unique=True)
     branch_name = models.CharField(max_length=100)
     branch_address = models.TextField()
 
