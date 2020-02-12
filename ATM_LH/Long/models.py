@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Province(models.Model):
-    province_id = models.CharField(max_length=2, unique=True)
+    province_id = models.CharField(max_length=5, unique=True)
     province_name = models.TextField()
 
     def __str__(self):
@@ -17,7 +17,7 @@ class Bank(models.Model):
     branches = models.ManyToManyField(Province, through="Branch")
 
     def __str__(self):
-        return self.bank_name, self.bank_id
+        return '{}{}'.format(self.bank_name, self.bank_id)
 
 
 class Branch(models.Model):

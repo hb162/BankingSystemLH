@@ -162,6 +162,19 @@ hr.light {
     margin-bottom: 30px;
 }
 
+.another{
+    margin-top: 80px;
+    margin-bottom: 60px;
+}
+
+.another-message{
+    margin-bottom: 100px;
+}
+
+.another-val{
+    height:55px;
+}
+
 @media (max-width: 992px) {
     .social a {
         font-size: 4em;

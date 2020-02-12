@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %} Nhập mệnh giá khác {% endblock %}
+{% block content %}
+
+    <div class="container">
+        <form method="POST" class="withdrawal text-center">
+            {% csrf_token %}
+            <h1 class="display-4">Nhập mệnh giá</h1>
+            <hr>
+            <div class="input-group mb-4 another">
+                <input type="text" class="form-control another-val" placeholder="Mệnh giá">
+                <div class="input-group-append">
+                    <input id="id_money" type="submit" name="amount" class="btn btn-primary another-val"
+                           onkeypress="isInputNumber(event)"
+                           value="Xác nhận"/>
+                    <script>
+                        function isInputNumber(evt) {
+                            var ch = String.fromCharCode(evt.which);
+                            if (!(/[0-9]/.test(ch))) {
+                                evt.preventDefault();
+                            }
+                        }
+                    </script>
+                </div>
+            </div>
+        </form>
+        <div class="another-message">
+            <h3 style="color: #cb0000">{{ message }}</h3>
+        </div>
+    </div>
+{% endblock %}

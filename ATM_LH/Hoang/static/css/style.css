@@ -1,68 +1,78 @@
-body{
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+
+
+body {
   margin: 0;
   padding: 0;
-  font-family: sans-serif;
-  background: url("../image/background_login.jpg") no-repeat;
+  font-family: Poppins sans-serif;
+  background: url("../image/background_login.jpg") no-repeat center center fixed;
   background-size: cover;
 }
-.box{
-  position: absolute;
-  top: 40%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 400px;
-  padding: 40px;
-  background: rgba(0, 0 ,0, .7);
-  box-sizing: border-box;
-  box-shadow: 0 15px 15px rgba(0,0,0, .6);
-  border-radius: 10px;
+
+.main-section{
+  margin: 0 auto;
+  margin-top: 130px;
+  padding: 0;
 }
-.box h2{
-  margin: 0 0 30px;
-  padding:0;
-  color: aliceblue;
-  text-align: center;
+
+.modal-content{
+  background-color: #434e5a;
+  opacity: .9;
+  padding: 0 18px;
+  border-radius:10px;
 }
-.box .inputBox{
-  position: relative;
+
+.user-img img{
+  height: 120px;
+  width: 120px;
 }
-.box .inputBox input{
-  width: 100%;
-  padding: 10px 0;
-  font-size: 16px;
-  color: #fff;
-  letter-spacing: 1px;
-  margin-bottom: 30px;
-  border: none;
-  border-bottom: 1px solid #fff;
-  outline: none;
-  background: transparent;
+
+.user-img{
+  margin-top: -60px;
+  margin-bottom: 45px;
 }
-.box .inputBox label{
-  position: absolute;
-  top:0;
-  left:0;
-  padding: 10px 0;
-  font-size: 16px;
-  color: aliceblue;
-  letter-spacing: 1px;
-  pointer-events: none;
-  transition: .5s;
+
+.form-group{
+  margin-bottom: 25px;
 }
-.box .inputBox input:focus ~ label,
-.box .inputBox input:valid ~ label{
-  top:-20px;
-  left: 0;
-  color: cornflowerblue;
-  font-size: 12px;
-}
-.box input[type='submit']{
-  background: transparent;
-  border: none;
-  outline:none;
-  color: #fff;
-  background: cornflowerblue;
-  padding: 10px 20px;
-  cursor: pointer;
+
+.form-group input{
+  height: 42px;
   border-radius: 5px;
+  border: 0;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.form-input button{
+  width: 40%;
+  margin: 5px 0 25px;
+}
+
+.btn-success{
+  background-color: #1c6288;
+  font-size: 19px;
+  border-radius: 5px;
+  padding: 7px 14px;
+  border: 1px solid #daf1ff;
+}
+.btn-success:hover{
+  background-color: #13445e;
+  border: 1px solid #daf1ff;
+}
+.forgot{
+  padding: 5px 0 25px;
+}
+.forgot a{
+  color: #daf1ff;
+}
+
+.back{
+  margin: 5px 0 25px;
+  padding:7px 14px;
+}
+
+.back:hover{
+  background-color: #13445e;
+  border: 1px solid #daf1ff;
 }

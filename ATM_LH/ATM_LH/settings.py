@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'ATM_LH.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'banking',
+        'NAME': 'Bank',
         'USER': 'root',
         'PASSWORD': 'test',
         'HOST': 'localhost',

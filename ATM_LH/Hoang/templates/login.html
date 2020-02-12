@@ -3,24 +3,43 @@
 <html>
 <head>
     <meta charset="utf-8">
-    <title>Đăng nhập</title>
+    <title>{% block title %}Đăng nhập {% endblock %}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href="//netdna.bootstrapcdn.com/font-awesome/3.2.1/css/font-awesome.css" rel="stylesheet">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
 </head>
 <body>
-    <div class="box">
-        <h2>Đăng nhập</h2>
-        <form method="post">
-            {% csrf_token %}
-            <div class="inputBox">
-                <input type="text" name="usr" required>
-                <label>Số tài khoản</label>
+    {% block login %}
+    <div class="modal-dialog text-center">
+        <div class="col-sm-9 main-section">
+            <div class="modal-content">
+                <div class="col-12 user-img">
+                    <img src="{% static 'image/icon.png' %}">
+                </div>
+                <div class="col-12 form-input">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="usr" placeholder="Số tài khoản" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="pas" placeholder="PIN" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Đăng nhập</button>
+                    </form>
+                </div>
+                <p class="lead" style="color: #fff">{{ err }}</p>
+                <div class="col-12 forgot">
+                    <a href="{% url 'forgot' %}">Quên mật khẩu</a>
+                </div>
             </div>
-            <div class="inputBox">
-                <input type="password" name="pas" required>
-                <label>Mật khẩu</label>
-            </div>
-            <input type="submit" name="" value="Submit">
-        </form>
+        </div>
     </div>
+    {% endblock %}
 </body>
 </html>

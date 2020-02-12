@@ -2,30 +2,53 @@
 {% load static %}
 {% block title %}Thông tin khách hàng{% endblock %}
 {% block content %}
-<div class="container">
-    <form class="withdrawal text-center">
+
+<div class="container text-center">
+    <form class="withdrawal ">
         {% csrf_token %}
-        <h1 class="display-4">Thông tin khách hàng</h1>
+        <h1 class="display-4 ">Thông tin khách hàng</h1>
         <hr>
-        <div class="form-group">
-            <label>Tên khách hàng:</label>
-            {{ customer }}
+        <div class="form-group row justify-content-between my-row">
+            <div class="col-md-6">
+                <label for="staticEmail" class="col-form-label">Tên khách hàng:</label>
+                <div class="col-sm-12">
+                     <input type="text" readonly class="form-control-plaintext text-center" value="{{ customer }}">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-form-label">Mã khách hàng:</label>
+                <div class="col-sm-12">
+                    <input type="text" readonly class="form-control-plaintext text-center" value="{{ cus_id }}">
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Số tài khoản:</label>
-            {{ usr }}
+        <div class="form-group row justify-content-between my-row">
+            <div class="col-md-6">
+                <label class="col-form-label">Số tài khoản:</label>
+                <div class="col-sm-12">
+                     <input type="text" readonly class="form-control-plaintext text-center" value="{{ usr }}">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-form-label">Số dư:</label>
+                <div class="col-sm-12">
+                    <input type="text" readonly class="form-control-plaintext text-center" value="{{ balance }} VNĐ">
+                </div>
+            </div>
         </div>
-        <div class="form-group">
-            <label>Số dư tài khoản:</label>
-            {{ balance }} VNĐ
-        </div>
-        <div class="form-group">
-            <label>Ngày tạo:</label>
-            {{ create_day }}
-        </div>
-        <div class="form-group">
-            <label>Ngày hết hạn:</label>
-            {{ end_day }}
+        <div class="form-group row justify-content-between my-row">
+            <div class="col-md-6">
+                <label class="col-form-label">Ngày tạo:</label>
+                <div class="col-sm-12">
+                     <input type="text" readonly class="form-control-plaintext text-center" value="{{ create_day }}">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <label class="col-form-label">Ngày hết hạn:</label>
+                <div class="col-sm-12">
+                    <input type="text" readonly class="form-control-plaintext text-center" value="{{ end_day }}">
+                </div>
+            </div>
         </div>
     </form>
 </div>
