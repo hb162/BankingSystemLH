@@ -171,79 +171,72 @@ def withdrawal_view(request):
             dt = datetime.datetime.now()
             start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
             end = dt.replace(hour=23, minute=59, second=59, microsecond=999999)
-            # tổng số lân rút trong ngày
-            count = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(transaction_time__gte=start, transaction_time__lte=end).count()
+            total = 0
             # tổng số tiền rút 1 ngày
-            # money = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(transaction_time__gte=start, transaction_time__lte=end)
-            # total = money.balance
+            money = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(transaction_time__gte=start, transaction_time__lte=end)
+            for i in money:
+                total = total + i.balance
             amount = request.POST['amount'] if 'amount' in request.POST else 0
             try:
                 amount = int(amount)
             except:
                 return HttpResponse("Lỗi amount")
             try:
-                if count < 6:
-                    # if total <= 99999999:
-                        if amount % 10000 != 0:
-                            err = "Số tiền phải là bội của 10000 VNĐ."
-                            context = {
-                                'message': err,
-                                'usr': usr
-                            }
-                            return render(request, 'withdrawal.html', context)
-                        elif amount == 0:
-                            err = "Số tiền phải khác 0 VNĐ."
-                            context = {
-                                'message': err,
-                                'usr': usr
-                            }
-                            return render(request, 'withdrawal.html', context)
-                        # elif total + amount >= account.limit:
-                        #     err = "Số tiền vượt quá hạn mức."
-                        #     context = {
-                        #         'message': err,
-                        #         'usr': usr
-                        #     }
-                        #     return render(request, "withdrawal.html", context)
-                        elif account.balance - amount <= 49000:
-                            err = "Tài khoản không đủ tiền để thực hiện giao dịch."
-                            context = {
-                                'message': err,
-                                'usr': usr
-                            }
-                            return render(request, 'withdrawal.html', context)
-                        elif atm.atm_balance < amount or atm.atm_balance - amount < 0:
-                            err = "Cây ATM đã hết tiền."
-                            context = {
-                                'message': err,
-                                'usr': usr
-                            }
-                            return render(request, 'withdrawal.html', context)
-                        else:
-                            account.balance = account.balance - amount - 1000
-                            atm.atm_balance = atm.atm_balance - amount
-                            Transaction.objects.create(transaction_type='RT',
-                                                       transaction_time=datetime.datetime.now(),
-                                                       balance=amount,
-                                                       transaction_fee=1000,
-                                                       content='Rut tien tai cay ATM',
-                                                       receive_account=None,
-                                                       status='1',
-                                                       atm_id=atm_id,
-                                                       bank_id=bank_id,
-                                                       card_no_id=card)
-                            account.save()
-                            atm.save()
-                            return HttpResponse('Rút thành công %d VNĐ' % amount)
-                    # else:
-                    #     err = "Bạn đã tới hạn mức giao dịch!"
-                    #     context = {
-                    #         'usr': usr,
-                    #         'message': err
-                    #     }
-                    #     return render(request, 'withdrawal.html', context)
+                if total <= account.limit:
+                    if amount % 10000 != 0:
+                        err = "Số tiền phải là bội của 10000 VNĐ."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'withdrawal.html', context)
+                    elif amount == 0:
+                        err = "Số tiền phải khác 0 VNĐ."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'withdrawal.html', context)
+                    elif total + amount >= account.limit:
+                        err = "Số tiền vượt quá hạn mức."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, "withdrawal.html", context)
+                    elif account.balance - amount <= 49000:
+                        err = "Tài khoản không đủ tiền để thực hiện giao dịch."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'withdrawal.html', context)
+                    elif atm.atm_balance < amount or atm.atm_balance - amount < 0:
+                        err = "Cây ATM đã hết tiền."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'withdrawal.html', context)
+                    else:
+                        account.balance = account.balance - amount - 1000
+                        atm.atm_balance = atm.atm_balance - amount
+                        Transaction.objects.create(transaction_type='RT',
+                                                   transaction_time=datetime.datetime.now(),
+                                                   balance=amount,
+                                                   transaction_fee=1000,
+                                                   content='Rut tien tai cay ATM',
+                                                   receive_account=None,
+                                                   status='1',
+                                                   atm_id=atm_id,
+                                                   bank_id=bank_id,
+                                                   card_no_id=card,
+                                                   receiver=None)
+                        account.save()
+                        atm.save()
+                        return HttpResponse('Rút thành công %d VNĐ' % amount)
                 else:
-                    err = "Bạn đã thực hiện đủ số giao dịch trong ngày hôm nay"
+                    err = "Bạn đã tới hạn mức giao dịch!"
                     context = {
                         'usr': usr,
                         'message': err
@@ -292,8 +285,8 @@ def transfer_internal(request):
             except:
                 return HttpResponse("Lỗi amount")
             try:
-                receiver = Account.objects.filter(account_no=receive_account)
-                if receiver.exists():
+                receive_acc = Account.objects.filter(account_no=receive_account)
+                if receive_acc.exists():
                     if amount == 0:
                         message = "Số tiền nhập phải khác 0."
                         context = {
@@ -315,6 +308,13 @@ def transfer_internal(request):
                             'message': message
                         }
                         return render(request, 'transfer_internal.html', context)
+                    elif balance - amount <= 49000:
+                        message = "Tài khoản không đủ tiền để thực hiện giao dịch."
+                        context = {
+                            'usr': usr,
+                            'message': message
+                        }
+                        return render(request, 'transfer_external.html', context)
                     else:
                         request.session['sender'] = acc
                         request.session['balance'] = balance
@@ -348,7 +348,7 @@ def confirm_internal(request):
             'usr': usr,
             'acc': acc,
             'balance': balance,
-            'receiver': receive_account,
+            'receive_acc': receive_account,
             'amount': amount,
             'content': content,
         }
@@ -357,23 +357,26 @@ def confirm_internal(request):
         atm = ATM.objects.get(atm_id='ATM01')
         card = Card.objects.filter(account_no=acc, card_type='2').first()
         sender = Account.objects.get(account_no=acc)
-        receiver = Account.objects.get(account_no=receive_account)
+        receive_acc = Account.objects.get(account_no=receive_account)
+        get_name = receive_acc.customer_id
+        receiver = Customer.objects.get(customer_id=get_name).full_name
         if request.method == "POST":
             try:
                 sender.balance = sender.balance - amount
-                receiver.balance = receiver.balance + amount
+                receive_acc.balance = receive_acc.balance + amount
                 Transaction.objects.create(transaction_type='CKC',
                                            transaction_time=datetime.datetime.now(),
                                            balance=amount,
                                            transaction_fee=0,
                                            status='1',
                                            content=content,
-                                           receive_account=receiver,
+                                           receive_account=receive_acc,
                                            atm_id=atm,
                                            bank_id=bank_id,
-                                           card_no_id=card)
+                                           card_no_id=card,
+                                           receiver=receiver)
                 sender.save()
-                receiver.save()
+                receive_acc.save()
                 return HttpResponse("Thành công!")
             except:
                 return HttpResponse("Lỗi")
@@ -425,6 +428,13 @@ def transfer_external(request):
                         'message': message
                     }
                     return render(request, 'transfer_external.html', context)
+                elif balance - amount <= 49000:
+                    message = "Tài khoản không đủ tiền để thực hiện giao dịch."
+                    context = {
+                        'usr': usr,
+                        'message': message
+                    }
+                    return render(request, 'transfer_external.html', context)
                 else:
                     request.session['sender'] = sender
                     request.session['balance'] = balance
@@ -468,26 +478,31 @@ def confirm_external(request):
         account = Account.objects.get(account_no=sender)
         card = Card.objects.filter(account_no=sender, card_type='2').first()
         atm = ATM.objects.get(atm_id='ATM01')
-        get_bank = Bank.objects.get(bank_id=bank)
+        get_bank = Bank.objects.get(bank_id='CTG')
         bank_id = get_bank.bank_id
-        try:
-            account.balance = account.balance-amount-10000
-            Transaction.objects.create(transaction_type='CKK',
-                                       transaction_time=datetime.datetime.now(),
-                                       balance = amount,
-                                       transaction_fee=10000,
-                                       receive_account=receive_acc,
-                                       content=content,
-                                       status=1,
-                                       card_no_id=card,
-                                       atm_id=atm,
-                                       bank_id=bank_id)
-            account.save()
-            return HttpResponse("Thành công")
-        except:
-            return HttpResponse("Lỗi")
+        if request.method == "POST":
+            try:
+                account.balance = account.balance - amount - 10000
+                Transaction.objects.create(transaction_type='CKK',
+                                           transaction_time=datetime.datetime.now(),
+                                           balance=amount,
+                                           transaction_fee=10000,
+                                           receive_account=receive_acc,
+                                           content=content,
+                                           status=1,
+                                           card_no_id=card,
+                                           atm_id=atm,
+                                           bank_id=bank_id,
+                                           receiver=receiver)
+                account.save()
+                return HttpResponse("Thành công")
+            except:
+                return HttpResponse("Lỗi")
     return render(request, 'confirm_external.html', context)
 
 
 def history_view(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+
     return render(request, 'history_transaction.html')
