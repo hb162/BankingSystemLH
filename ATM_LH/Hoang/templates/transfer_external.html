@@ -45,17 +45,17 @@
             <div class="row">
                 <div class="col">
                     <label>Ngân hàng nhận:</label>
-                    <select id="bank" name="ngan_hang">
+                    <select id="bank" name="ngan_hang" class="form-control">
                         <option value="No">------------</option>
                         <option value="TCB">Techcombank</option>
-                        <option value="AGR">Agribank</option>
+                        <option value="AGRB">Agribank</option>
                     </select>
                 </div>
             </div>
             <div class="row">
                 <div class="col">
                     <label>Chi nhánh:</label>
-                    <select id="branch" name="branch">
+                    <select id="branch" name="branch" class="form-control">
                         <option value="">-----------</option>
                     </select>
                 </div>
@@ -68,7 +68,7 @@
                                 $("#branch").html("<option value='TCB01'>Techcombank Thanh Xuan, Ha Noi</option><option value='TCB02'>Techcombank Binh Thanh, TP.HCM</option>" +
                                     "<option value='TCB03'>Techcombank Le Chan, Hai Phong</option>");
                                 break;
-                            case 'AGR':
+                            case 'AGRB':
                                 $("#branch").html("<option value='AGR1'>Agribank Dong Anh, Ha Noi</option><option value='AGR2'>Agribank Q1, TP.HCM</option>" +
                                     "<option value='AGR3'>Agribank Q7, TP.HCM</option><option value='AGR4'>Agribank Ngo Quyen, Hai Phong</option>");
                                 break;

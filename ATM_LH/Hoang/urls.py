@@ -16,4 +16,5 @@ urlpatterns = [
     path('forgot/', views.forgot_view, name='forgot'),
     path('profile/', views.profile_view, name='profile'),
     path('history/', views.history_view, name='history'),
+    path('history/<int:transaction_id>/', views.detail_history, name='detail'),
 ]

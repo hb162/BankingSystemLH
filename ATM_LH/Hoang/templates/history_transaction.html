@@ -2,11 +2,65 @@
 {% load static %}
 {% block title %}Lịch sử giao dịch{% endblock %}
 {% block content %}
-     <div class="container">
+    <div class="container">
         <form method="POST" class="withdrawal text-center">
             {% csrf_token %}
             <h1 class="display-4">Lịch sử giao dịch</h1>
             <hr>
+            <div class="row my-row">
+                <div class="col-sm-3 my-col">
+                    <label>Ngày</label>
+                </div>
+                <div class="col-sm-2 my-col">
+                    <label>Loại giao dịch</label>
+                </div>
+                <div class="col-sm-4 my-col">
+                    <label>Nội dung</label>
+                </div>
+                <div class="col-sm-2 my-col">
+                    <label>Số tiền</label>
+                </div>
+                <div class="col-sm-1 my-col">
+                    <label>Chi tiết</label>
+                </div>
+            </div>
+            <div class="row my-row">
+                <div class="col-sm-3 my-col">
+                    {% for d in date %}
+                        <div class="row">
+                            <input type="text" class="form-control plaintext text-center" readonly value="{{ d }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-2 my-col">
+                    {% for t in type %}
+                        <div class="row">
+                            <input type="text" class="form-control plaintext text-center" readonly value="{{ t }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-4 my-col">
+                    {% for c in content %}
+                        <div class="row">
+                            <input type="text" class="form-control plaintext text-center" readonly value="{{ c }}">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-2 my-col">
+                    {% for a in amount %}
+                        <div class="row">
+                            <input type="text" class="form-control plaintext text-center" readonly value="{{ a }} VNĐ">
+                        </div>
+                    {% endfor %}
+                </div>
+                <div class="col-sm-1 my-col">
+                    {% for a in amount %}
+                        <div class="row">
+                            <a href="{% url 'detail' trans.id  %}" class="form-control" style="color:#0e76ed">Chi tiết</a>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         </form>
      </div>
 {% endblock %}

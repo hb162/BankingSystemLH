@@ -1,6 +1,6 @@
 from django.contrib import auth, messages
-from django.shortcuts import render, redirect
-from django.http import HttpResponse
+from django.shortcuts import render, redirect, get_object_or_404
+from django.http import HttpResponse, Http404
 import random
 from datetime import timedelta
 import datetime
@@ -175,7 +175,7 @@ def withdrawal_view(request):
             # tổng số tiền rút 1 ngày
             money = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(transaction_time__gte=start, transaction_time__lte=end)
             for i in money:
-                total = total + i.balance
+                total = total + i.amount
             amount = request.POST['amount'] if 'amount' in request.POST else 0
             try:
                 amount = int(amount)
@@ -223,7 +223,8 @@ def withdrawal_view(request):
                         atm.atm_balance = atm.atm_balance - amount
                         Transaction.objects.create(transaction_type='RT',
                                                    transaction_time=datetime.datetime.now(),
-                                                   balance=amount,
+                                                   amount=amount,
+                                                   balance=account.balance,
                                                    transaction_fee=1000,
                                                    content='Rut tien tai cay ATM',
                                                    receive_account=None,
@@ -366,7 +367,8 @@ def confirm_internal(request):
                 receive_acc.balance = receive_acc.balance + amount
                 Transaction.objects.create(transaction_type='CKC',
                                            transaction_time=datetime.datetime.now(),
-                                           balance=amount,
+                                           amount=amount,
+                                           balance=sender.balance,
                                            transaction_fee=0,
                                            status='1',
                                            content=content,
@@ -395,7 +397,6 @@ def transfer_external(request):
         if request.method == "POST":
             data = request.POST.copy()
             sender = data['sender']
-            balance = data['balance']
             receive_acc = data['receive-acc']
             receiver = data['name']
             bank = data['ngan_hang'] if 'ngan_hang' in request.POST else 0
@@ -447,7 +448,7 @@ def transfer_external(request):
                     request.session.set_expiry(300)
                     return redirect('confirm_ex')
             except:
-                return HttpResponse("Lỗi ")
+                return HttpResponse("Lỗi 1 ")
     return render(request, 'transfer_external.html', context)
 
 
@@ -485,7 +486,8 @@ def confirm_external(request):
                 account.balance = account.balance - amount - 10000
                 Transaction.objects.create(transaction_type='CKK',
                                            transaction_time=datetime.datetime.now(),
-                                           balance=amount,
+                                           amount=amount,
+                                           balance=account.balance,
                                            transaction_fee=10000,
                                            receive_account=receive_acc,
                                            content=content,
@@ -497,12 +499,45 @@ def confirm_external(request):
                 account.save()
                 return HttpResponse("Thành công")
             except:
-                return HttpResponse("Lỗi")
+                return HttpResponse("Lỗi 2")
     return render(request, 'confirm_external.html', context)
 
 
 def history_view(request):
+    global context
     if request.session.has_key('usr'):
         usr = request.session['usr']
+        account = Account.objects.get(account_no=usr)
+        card = Card.objects.get(account_no=account)
+        date = []
+        content = []
+        transaction_type = []
+        amount = []
+        transaction = Transaction.objects.filter(card_no_id=card)
+        for i in transaction:
+            date.append(i.transaction_time)
+            content.append(i.content)
+            transaction_type.append(i.transaction_type)
+            amount.append(i.amount)
+        context = {
+            'usr': usr,
+            'date': date,
+            'content': content,
+            'type': transaction_type,
+            'amount': amount,
+            'transaction': transaction,
+        }
+    return render(request, 'history_transaction.html', context)
 
-    return render(request, 'history_transaction.html')
+
+def detail_history(request, transaction_id):
+    global context
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+        if request.method == "GET":
+            trans = get_object_or_404(Transaction, pk=transaction_id)
+            context = {
+                'usr': usr,
+                'trans': trans
+            }
+    return render(request, 'detail_history.html', context)
