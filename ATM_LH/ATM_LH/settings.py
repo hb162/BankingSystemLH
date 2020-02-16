@@ -56,7 +56,7 @@ ROOT_URLCONF = 'ATM_LH.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -78,7 +78,7 @@ WSGI_APPLICATION = 'ATM_LH.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'banking',
+        'NAME': 'Banking',
         'USER': 'root',
         'PASSWORD': 'test',
         'HOST': 'localhost',
@@ -127,3 +127,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+  os.path.join(BASE_DIR, 'static'),
+  '/home/hoang/Desktop/BSP/BankingSystemLH/Hoang/static/',
+]

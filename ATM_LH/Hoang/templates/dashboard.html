@@ -1,0 +1,169 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Trang chủ{% endblock %}
+
+{% block content %}
+    <!-- Ảnh trượt -->
+    <div id="slides" class="carousel slide" data-ride="carousel">
+        <ul class="carousel-indicators">
+            <li data-target="#slides" data-slide-to="0" class="active"></li>
+            <li data-target="#slides" data-slide-to="1"></li>
+            <li data-target="#slides" data-slide-to="2"></li>
+            <li data-target="#slides" data-slide-to="3"></li>
+        </ul>
+        <div class="carousel-inner">
+            <div class="carousel-item active">
+                <img src="{% static 'image/slide1.png' %}">
+                <div class="carousel-caption">
+                    <h1 class="display-2">Ngân Hàng ABC</h1>
+                    <h3>Nhanh chóng, Thân thiện, Tin cậy</h3>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'image/manhattan.jpg' %}">
+                <div class="carousel-caption2">
+                    <h1 class="display-4">Giao dịch nhanh chóng</h1>
+                    <h3>Quý khách sẽ được tận hưởng những dịch vụ tuyệt vời khi sử dụng dịch vụ của chúng tôi.</h3>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'image/anh1.jpg' %}">
+                <div class="carousel-caption2">
+                    <h1 class="display-4">Giao diện thân thiện </h1>
+                    <h3>Giao diện của hệ thống rất dễ tiếp cận với mọi độ tuổi.</h3>
+                </div>
+            </div>
+            <div class="carousel-item">
+                <img src="{% static 'image/Hand.jpg' %}">
+                <div class="carousel-caption2">
+                    <h1 class="display-4">Đối tác tin cậy</h1>
+                    <h3>Chúng tôi luôn làm hết bổn phận để luôn là đối tác tin cậy với quý khách hàng.</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Jumbotron -->
+    <div class="container-fluid">
+        <div class="row jumbotron">
+            <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 col-xl-10">
+                <p class="lead">Ngân Hàng ABC luôn đem đến những điều tốt nhất cho khách hàng của mình</p>
+            </div>
+            <div class="col-xs-12 col-sm-12 col-md-3 col-lg-3 col-xl-2">
+                <a href="#"><button type="button" class="btn btn-outline-secondary btn-lg">Khám phá</button></a>
+            </div>
+        </div>
+
+    </div>
+    <!-- Sứ mệnh -->
+    <div class="container-fluid padding">
+        <div class="row text-center welcome">
+            <div class="col-12">
+                <h2 class="display-4">Sứ mệnh của ABC</h2>
+            </div>
+            <hr>
+            <div class="col-12">
+                <p class="lead">Tại ABC, chúng tôi đem đến các dịch vụ như</p>
+            </div>
+        </div>
+    </div>
+    <!-- Team -->
+    <div class="container-fluid padding">
+        <div class="row welcome text-center">
+            <div class="col-12">
+                <h1 class="display-4">Đội ngũ chuyên gia</h1>
+            </div>
+            <hr>
+        </div>
+    </div>
+    <div class="container-fluid padding">
+        <div class="row padding">
+            <div class="col-md-4">
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'image/emp1.png' %}">
+                    <div class="card-body">
+                        <h4 class="card-title">John Doe</h4>
+                        <p class="card-text">Có 10 năm kinh nghiệm ở các ngân hàng lớn như:HSBC, PNB Paribas.</p>
+                        <a href="#" class="btn btn-outline-secondary">Thông tin</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'image/emp2.jpg' %}">
+                    <div class="card-body">
+                        <h4 class="card-title">Micheal Robert</h4>
+                        <p class="card-text">Tiến sĩ chuyên ngành ngân hàng, cố vấn về kinh tế cấp cao của Chính Phủ. </p>
+                            <a href="#" class="btn btn-outline-secondary">Thông tin</a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="card">
+                    <img class="card-img-top" src="{% static 'image/emp3.png' %}">
+                    <div class="card-body">
+                        <h4 class="card-title">Phú Lê</h4>
+                        <p class="card-text">8 năm kinh nghiệm, giám đốc điều hành công ty, tiến sĩ chuyên ngành tài chính.</p>
+                            <a href="#" class="btn btn-outline-secondary">Thông tin</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Dich vu -->
+    <div class="container-fluid padding">
+        <div class="row text-center welcome">
+            <div class="col-12">
+                <h2 class="display-4">Các dịch vụ của chúng tôi</h2>
+            </div>
+            <hr>
+            <div class="col-12">
+                <p class="lead">Tại ABC, chúng tôi đem đến các dịch vụ như</p>
+            </div>
+        </div>
+    </div>
+    <!-- Các dịch vụ -->
+    <div class="container-fluid padding">
+        <div class="row text-center welcome padding">
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <i class="fa fa-money"></i>
+                <h3>Rút tiền</h3>
+                <p>Rút ra số tiền mình mong muốn</p>
+                <a href="{% url 'withdrawal' %}"><button type="button" class="btn btn-outline-secondary btn-lg">Xem thêm</button></a>
+            </div>
+            <div class="col-xs-12 col-sm-6 col-md-4">
+                <i class="fa fa-usd"></i>
+                <h3>Chuyển tiền</h3>
+                <p>Chuyển tiền đến số tài khoản khác</p>
+                <a href="{% url 'internal' %}"><button type="button" class="btn btn-outline-secondary btn-lg">Xem thêm</button></a>
+            </div>
+            <div class="col-sm-12 col-md-4">
+                <i class="fa fa-user-plus"></i>
+                <h3>Mở thẻ</h3>
+                <p>Mở thêm các loại thẻ khác</p>
+                <a href="{% url 'opencard' %}"><button type="button" class="btn btn-outline-secondary btn-lg">Xem thêm</button></a>
+            </div>
+        </div>
+    <hr class="my-4">
+    </div>
+
+    <!-- MXH -->
+    <div class="container-fluid padding">
+        <div class="row text-center padding">
+            <div class="col-12">
+                <h2>Liên hệ</h2>
+            </div>
+            <div class="col-12 social padding">
+                <a href="#"><i class="fa fa-facebook-official"></i></a>
+                <a href="#"><i class="fa fa-twitter"></i></a>
+                <a href="#"><i class="fa fa-instagram"></i></a>
+                <a href="#"><i class="fa fa-google-plus"></i></a>
+                <a href="#"><i class="fa fa-youtube-play"></i></a>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+</body>
+</html>

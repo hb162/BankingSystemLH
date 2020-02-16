@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Chuyển tiền cùng ngân hàng{% endblock %}
+{% block content %}
+    <div class="container">
+        <form method="POST" class="withdrawal text-center">
+            {% csrf_token %}
+            <h1 class="display-4">Xác nhận chuyển tiền</h1>
+            <hr>
+            <div class="row">
+                <div class="col">
+                    <label>Tài khoản chuyển:</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext text-center" id="sender" name="sender"
+                               value="{{ usr }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Số dư:</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext text-center" id="balance"
+                               name="balance" value="{{ balance }} VNĐ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Số tài khoản nhận:</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext text-center" id="receive-acc"
+                               name="receive-acc" value="{{ receive_acc }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Số tiền:</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext text-center" name="amount" id="amount"
+                               value="{{ amount }} VNĐ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Nội dung:</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext text-center" name="content"
+                               id="content" value="{{ content }}">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <label>Phí giao dịch:</label>
+                    <div class="col">
+                        <input type="text" readonly class="form-control-plaintext text-center" name="fee" id="fee"
+                               value="0.VNĐ">
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                    <a href="{% url 'internal' %}" class="btn btn-primary">Quay lại</a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

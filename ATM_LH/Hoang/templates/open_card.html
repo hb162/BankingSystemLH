@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Mở thẻ{% endblock %}
+{% block content %}
+<div class="container">
+        <form method="POST" class="withdrawal text-center">
+            {% csrf_token %}
+            <h1 class="display-4">Mở thẻ</h1>
+            <hr>
+        </form>
+</div>
+{% endblock %}

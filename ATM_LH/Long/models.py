@@ -2,7 +2,7 @@ from django.db import models
 
 
 class Province(models.Model):
-    province_id = models.CharField(max_length=2, unique=True)
+    province_id = models.CharField(max_length=5, unique=True)
     province_name = models.TextField()
 
     def __str__(self):
@@ -17,13 +17,13 @@ class Bank(models.Model):
     branches = models.ManyToManyField(Province, through="Branch")
 
     def __str__(self):
-        return self.bank_name, self.bank_id
+        return '{}{}'.format(self.bank_name, self.bank_id)
 
 
 class Branch(models.Model):
     province = models.ForeignKey(Province, to_field='province_id', on_delete=models.CASCADE)
     bank_id = models.ForeignKey(Bank, to_field='bank_id', on_delete=models.CASCADE)
-    branch_id = models.CharField(max_length=5, primary_key=True)
+    branch_id = models.CharField(max_length=5, unique=True)
     branch_name = models.CharField(max_length=100)
     branch_address = models.TextField()
 
@@ -32,7 +32,7 @@ class Branch(models.Model):
 
 
 class Employee(models.Model):
-    branch_id = models.ForeignKey(Branch, to_field='branch_id', on_delete=models.CASCADE)
+    branch = models.ForeignKey(Branch, to_field='branch_id', on_delete=models.CASCADE)
     employee_id = models.CharField(max_length=5, unique=True)
     full_name = models.CharField(max_length=50)
     username = models.CharField(max_length=32)
@@ -47,7 +47,7 @@ class ATM(models.Model):
         ('1', 'Active'),
         ('0', 'Deactive'),
     )
-    employee_id = models.OneToOneField(Employee, to_field='employee_id', on_delete=models.CASCADE)
+    employee = models.OneToOneField(Employee, to_field='employee_id', on_delete=models.CASCADE)
     atm_id = models.CharField(max_length=5, unique=True)
     address = models.TextField()
     atm_balance = models.BigIntegerField()
@@ -59,7 +59,7 @@ class ATM(models.Model):
 
 class HistoryMoney(models.Model):
     history_id = models.CharField(max_length=3, unique=True)
-    atm_id = models.ForeignKey(ATM, to_field='atm_id', on_delete=models.CASCADE)
+    atm = models.ForeignKey(ATM, to_field='atm_id', on_delete=models.CASCADE)
     history_time = models.DateTimeField()
     money = models.BigIntegerField()
 

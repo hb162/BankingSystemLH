@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Lịch sử giao dịch{% endblock %}
+{% block content %}
+    <div class="container">
+        <form method="POST" class="withdrawal text-center">
+            {% csrf_token %}
+            <h1 class="display-4">Chi tiết giao dịch</h1>
+            <hr>
+        </form>
+    </div>
+{% endblock %}

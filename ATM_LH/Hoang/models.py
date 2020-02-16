@@ -34,13 +34,13 @@ class Account(models.Model):
         ('2', 'Dormant'),
         ('0', 'Inactive'),
     )
-    customer_id = models.ForeignKey(Customer, to_field='customer_id', on_delete=models.CASCADE)
+    customer = models.ForeignKey(Customer, to_field='customer_id', on_delete=models.CASCADE)
     account_no = models.CharField(max_length=15, unique=True)
     password = models.CharField(max_length=50)
     limit = models.BigIntegerField()
     balance = models.BigIntegerField()
     create_day = models.DateField()
-    end_day = models.DateTimeField()
+    end_day = models.DateField()
     status = models.CharField(max_length=1, choices=choice)
 
     def __str__(self):
@@ -83,10 +83,13 @@ class Transaction(models.Model):
     )
     transaction_type = models.CharField(max_length=3, choices=type)
     transaction_time = models.DateTimeField()
-    balance = models.BigIntegerField()
+    amount = models.BigIntegerField(default=0)
+    balance = models.BigIntegerField(default=0)
     card_no = models.ForeignKey(Card, to_field='card_no', on_delete=models.CASCADE)
     transaction_fee = models.IntegerField()
+    receive_account = models.CharField(max_length=12, null=True, blank=True)
+    receiver = models.CharField(max_length=50, null=True, blank=True)
+    content = models.CharField(max_length=100, null=True, blank=True)
     status = models.CharField(max_length=1, choices=choice)
-    atm_id = models.ForeignKey(ATM, to_field='atm_id', on_delete=models.CASCADE)
-    bank_id = models.ForeignKey(Bank, to_field='bank_id', on_delete=models.CASCADE)
-#    receiver_account = models.CharField(max_length=10, null=True, blank=True)
+    atm = models.ForeignKey(ATM, to_field='atm_id', on_delete=models.CASCADE)
+    bank = models.ForeignKey(Bank, to_field='bank_id', on_delete=models.CASCADE)

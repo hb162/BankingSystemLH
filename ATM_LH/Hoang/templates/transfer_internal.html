@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Chuyển tiền cùng ngân hàng{% endblock %}
+{% block content %}
+<div class="container">
+    <form method="POST" class="withdrawal text-center">
+        {% csrf_token %}
+        <h1 class="display-4">Chuyển tiền cùng ngân hàng</h1>
+        <hr>
+        <div class="row">
+            <div class="col">
+                <label>Tài khoản chuyển:</label>
+                <div class="col">
+                     <input type="text" readonly class="form-control-plaintext text-center" id="sender" name="sender" value="{{ usr }}">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Số dư:</label>
+                <div class="col">
+                     <input type="text" readonly class="form-control-plaintext text-center" id="balance" name="balance" value="{{ balance }} VNĐ">
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Số tài khoản nhận:</label>
+                <div class="col">
+                     <input type="text" class="form-control plaintext text-center" id="receive-acc" name="receive-acc" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Số tiền:</label>
+                <div class="col">
+                     <input type="text" class="form-control plaintext text-center" name="amount" id="amount" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label>Nội dung:</label>
+                <div class="col">
+                     <input type="text" class="form-control plaintext text-center" name="content" id="content" maxlength="100" required>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <button type="submit" class="btn btn-primary">Xác nhận</button>
+            </div>
+        </div>
+        <p class="lead">{{ message }}</p>
+    </form>
+</div>
+{% endblock %}

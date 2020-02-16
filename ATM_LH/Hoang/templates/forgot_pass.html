@@ -1,0 +1,34 @@
+{% extends 'login.html' %}
+{% load static %}
+{% block title %}Quên mật khẩu{% endblock %}
+{% block login %}
+    <div class="modal-dialog text-center">
+        <div class="col-sm-9 main-section">
+            <div class="modal-content">
+                <div class="col-12 user-img">
+                    <img src="{% static 'image/icon.png' %}">
+                </div>
+                <div class="col-12 form-input">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <div class="form-group">
+                            <input type="text" class="form-control" name="usr" placeholder="Số tài khoản" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="old-pas" placeholder="PIN cũ" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="pas1" placeholder="PIN mới" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control" name="pas2" placeholder="Nhập lại PIN" required>
+                        </div>
+                        <button type="submit" class="btn btn-success">Xác nhận</button>
+                        <a href="{% url 'login' %}" class="btn btn-success back">Quay lại</a>
+                    </form>
+                    <p class="lead" style="color: #fff">{{ message }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

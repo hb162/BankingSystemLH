@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,700');
+
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: Poppins sans-serif;
+  background: url("../image/background_login.jpg") no-repeat center center fixed;
+  background-size: cover;
+}
+
+.main-section{
+  margin: 0 auto;
+  margin-top: 130px;
+  padding: 0;
+}
+
+.modal-content{
+  background-color: #434e5a;
+  opacity: .9;
+  padding: 0 18px;
+  border-radius:10px;
+}
+
+.user-img img{
+  height: 120px;
+  width: 120px;
+}
+
+.user-img{
+  margin-top: -60px;
+  margin-bottom: 45px;
+}
+
+.form-group{
+  margin-bottom: 25px;
+}
+
+.form-group input{
+  height: 42px;
+  border-radius: 5px;
+  border: 0;
+  font-size: 18px;
+  letter-spacing: 2px;
+}
+
+.form-input button{
+  width: 40%;
+  margin: 5px 0 25px;
+}
+
+.btn-success{
+  background-color: #1c6288;
+  font-size: 19px;
+  border-radius: 5px;
+  padding: 7px 14px;
+  border: 1px solid #daf1ff;
+}
+.btn-success:hover{
+  background-color: #13445e;
+  border: 1px solid #daf1ff;
+}
+.forgot{
+  padding: 5px 0 25px;
+}
+.forgot a{
+  color: #daf1ff;
+}
+
+.back{
+  margin: 5px 0 25px;
+  padding:7px 14px;
+}
+
+.back:hover{
+  background-color: #13445e;
+  border: 1px solid #daf1ff;
+}
