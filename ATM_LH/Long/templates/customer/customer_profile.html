@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title> {% block title %}Khách hàng{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+    {{ full_name }}
+    <br>
+    {% if gender == "M" %}
+            Nam
+        {% elif gender == "W" %}
+            Nữ
+        {% else %}
+            Không giới tính
+    {% endif %}
+    <br>{{ phone_number }}
+    <br>{{ email }}
+    <br>{{ birthday }}
+    <br>{{ address }}
+    <br>{{ id_no }}
+    <br>{{ id_type }}
+    <br>{{ branch_name }}
+    <br>{{ bank_name }}
+{% endblock %}
+</body>
+</html>

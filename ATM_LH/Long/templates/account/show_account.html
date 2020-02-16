@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}Truy vấn tài khoản{% endblock %}</title>
+</head>
+<div>
+    {% block content %}
+       <div class="row mt-3 mb-5">
+        <label class="text-info mt-3 col col-sm-3 col-md-5 col-lg-5"><h4>Truy vấn tài khoản</h4></label>
+        <div class="col-sm-0 col-md-3 col-lg-3"></div>
+        <div class="col-sm-4 col-md-4 col-lg-4">
+            <div class="btn-group">
+                <button type="button" class="btn btn-success">Thêm khách hàng</button>
+                <button type="button" class="btn btn-warning">In danh sách</button>
+            </div>
+        </div>
+       </div>
+       <div class="container-fluid">
+         <form method="post" action="{% url 'show_acc' %}" class="mt-3 mb-5">
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="form-row ">
+                    <div class="col col-sm-2 col-md-2 col-lg-2"></div>
+                    <div class="col col-sm-8 col-md-8 col-lg-8">
+                        <div class="row">
+                            <input type="number" placeholder="Nhập số tài khoản " name="account_no"
+                                   class="form-control col-md-10 col-lg-10">
+                            <button type="submit" class="btn btn-sm btn-primary">Tìm kiếm</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+        {% if messages %}
+        {% for message in messages %}
+            {% if message.level ==  DEFAULT_MESSAGE_LEVELS.ERROR  %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+        <hr>
+        {% if result_account %}
+           <div class="row">
+                <div class="col col-sm-8 col-md-8 col-lg-8">
+                    <label class="text-info mr-2"><h4>Số tài khoản:</h4></label><strong>{{ result_account.account_no }}</strong>
+                </div>
+                <div class="text-sm row">
+                        <div class="text-info mr-2">Tình trạng:</div>
+                        {% if result_account.status == '1'%}
+                            <p>Hoạt động </p>{% else %}<p>Không hoạt động</p>
+                        {% endif %}
+                </div>
+           </div>
+            <form class="form-text" style="background-color: whitesmoke">
+                <div class="form-group">
+                    <div class="text-sm-left mt-2 pt-3 pl-4">
+                        <strong><i>
+                            <a href="{% url 'profile_customer' result_customer.customer_id%}">Chi tiết khách hàng</a>
+                        </i></strong>
+                    </div>
+                    <hr>
+                    <div class="form-row pl-4 pb-2">
+                        <div class="col col-sm-6 col-md-6 col-lg-6">
+                             <label class="mr-2"><strong>Họ tên khách hàng:</strong></label>
+                             {{ result_customer.full_name }}
+                        </div>
+                        <div class="col col-sm-0 col-md-1 col-lg-1"></div>
+                        <div class="col col-sm-6 col-md-5 col-lg-5">
+                             <label class="mr-2"><strong>Email:</strong></label>
+                             {{ result_customer.email }}
+                        </div>
+                    </div>
+                     <div class="form-row pl-4 pb-2">
+                        <div class="col col-sm-6 col-md-6 col-lg-6">
+                             <label class="mr-2"><strong>Ngân hàng:</strong></label>
+                             {{ result_customer.branch.bank_id.bank_name }}
+                        </div>
+                        <div class="col col-sm-0 col-md-1 col-lg-1"></div>
+                        <div class="col col-sm-6 col-md-5 col-lg-5">
+                             <label class="mr-2"><strong>Chi nhánh:</strong></label>
+                             {{ result_customer.branch.branch_name }}
+                        </div>
+                    </div>
+                    <div class="form-row pl-4 pb-2">
+                        <div class="col col-sm-6 col-md-5 col-lg-5">
+                             <label class="mr-2"><strong>Loại giấy tờ:</strong></label>
+                             {{ result_customer.get_id_type_display}}
+                        </div>
+                        <div class="col col-sm-0 col-md-2 col-lg-2"></div>
+                        <div class="col col-sm-6 col-md-5 col-lg-5">
+                             <label class="mr-2"><strong>Mã số: </strong></label>
+                             {{ result_customer.id_no}}
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="text-sm-left text-primary pl-4"><strong><i>Các giao dịch gần đây</i></strong></div>
+                    <hr>
+                    <div class="container-fluid">
+                        <table class="table table-hover table-position table-bordered">
+                             <thead class="thead-light">
+                            <tr>
+                                <th scope="col">STT</th>
+                                <th scope="col">Thẻ giao dịch</th>
+                                <th scope="col">Loại</th>
+                                <th scope="col">Số tiền</th>
+                                <th scope="col">Thời gian</th>
+                                <th scope="col">Vị trí</th>
+                                <th scope="col">Chi tiết</th>
+                            </tr>
+                        </thead>
+{#                            {% for result_transaction in result_transactions %}#}
+{#                                <tr>#}
+{#                                    <td></td>#}
+{#                                    <td></td>#}
+{#                                    <td></td>#}
+{#                                    <td></td>#}
+{#                                    <td></td>#}
+{#                                    <td></td>#}
+{#                                </tr>#}
+{#                            {% endfor %}#}
+
+                        </table>
+                    </div>
+                </div>
+            </form>
+        {% endif %}
+        </div>
+    {% endblock %}
+</body>
+</html>

@@ -92,4 +92,4 @@ class Transaction(models.Model):
     status = models.CharField(max_length=1, choices=choice)
     atm = models.ForeignKey(ATM, to_field='atm_id', on_delete=models.CASCADE)
     bank = models.ForeignKey(Bank, to_field='bank_id', on_delete=models.CASCADE)
-    branch = models.ForeignKey(Branch, to_field='branch_id', default='CTG01', on_delete=models.CASCADE)
+    # branch = models.ForeignKey(Branch, to_field='branch_id', default='CTG01', on_delete=models.CASCADE)

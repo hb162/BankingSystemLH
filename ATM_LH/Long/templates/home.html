@@ -1,37 +1,19 @@
 {% extends "base.html" %}
-{% block title %}
-	Trang chủ
-{% endblock title %}
+
+{% block title %}Trang chủ{% endblock title %}
 
 {% block content %}
-	<h1>Trang chủ</h1>
-    <div class="p-2" style="color:#005cbf">
-        <h5>Chào <strong>{{request.user.username}}</strong></h5>
-    </div>
+	<div class="col-sm-4 col-md-4 col-lg-4 text-info mt-3"><h2>Trang chủ</h2></div>
 {% endblock content %}
 {% block dashboard %}
     <div class="btn-group">
-        <button type="button" class="btn btn-success" value="Mở thẻ ngân hàng" onclick="location.href='{% url 'open_card' %}'">
+        <button type="button" class="btn btn-primary" value="new_card" onclick="location.href='{% url 'open_card' %}'">
         Mở thẻ ngân hàng</button>
-        <button type="button" class="btn btn-success" value="Mở tài khoản ngân hàng" onclick="location.href='{% url 'open_account' %}'">
+        <button type="button" class="btn btn-primary" value="new_account" onclick="location.href='{% url 'open_account' %}'">
         Mở tài khoản ngân hàng</button>
-        <button type="button" class="btn btn-success" value="Mở tài khoản ngân hàng" onclick="location.href='{% url 'search_customer' %}'">
+        <button type="button" class="btn btn-primary" value="search_customer" onclick="location.href='{% url 'search_customer' %}'">
         Khách hàng</button>
+        <button type="button" class="btn btn-primary" value="search_account" onclick="location.href='{% url 'show_acc' %}'">
+        Tài khoản</button>
     </div>
-{% endblock %}
-{% block customer_result %}
-    <form method="get" action="{% url 'search_customer' %}">
-        <div class="row">
-            <input type="text" name="Q" placeholder="Search" class="form-control col-sm-3 col-md-3 col-lg-3" value="{{ request.GET.Q}}">
-            <input type="submit" class="btn btn-primary btn-sm" value="Search">
-        </div>
-    </form>
-    {% for object in object_customer %}
-            <div class="container">
-                <div class="row">
-                    {{ object.full_name }}
-                </div>
-            </div>
-    {% endfor %}
-
 {% endblock %}

@@ -11,13 +11,11 @@
             margin: fill;
         }
     </style>
+    <title> {% block title %}Khách hàng{% endblock %}</title>
 </head>
 <body>
-    {% block title %}
-    Khách hàng
-{% endblock %}
 {% block content %}
-    <div class="row">
+    <div class="row mt-3 pb-3">
         <div class="col-sm-3 col-md-3 col-lg-3 text-info"><h3>Khách hàng</h3></div>
         <div class="col-sm-5 col-md-5 col-lg-5"></div>
         <div class="col-sm-4 col-md-4 col-lg-4">
@@ -28,32 +26,84 @@
         </div>
     </div>
     <br>
-    <form method="get" action="{% url 'search_customer' %}">
-        <div class="row">
+    <form method="get" action="{% url 'search_customer' %}" class="mb-5">
+        <div class="form-row">
             <div class="col col-sm-2 col-md-2 col-lg-2"></div>
             <input type="text" name="Q" placeholder="Tìm kiếm khách hàng.." class="form-control col-sm-3 col-md-8 col-lg-8" value="{{ request.GET.Q}}">
-            <input type="submit" class="btn btn-primary btn-sm" value="Tìm kiếm">
+            <button type="submit" class="btn btn-primary btn-sm">
+                <span class="glyphicon glyphicon-search">Tìm kiếm</span></button>
         </div>
     </form>
-    <br>
-    <form>
-{#        chua biet viet j#}
+    <div class="container-fluid">
+        <form method="post" action="{% url 'search_customer' %}"
+        class="needs-validation bg-light" novalidate>
+            {% csrf_token %}
+            <div class="form-group">
+                <div class="form-row">
+                    <div class="form-group col-md-5 mt-3 ml-4">
+                        <label><strong>Khách hàng</strong></label>
+                        <input type="text" class="form-control" name="full_name"
+                               placeholder="Nhập tên khách hàng">
+                    </div>
+                    <div class="form-group col-md-1"></div>
+                     <div class="form-group col-md-5 mt-3">
+                         <label><strong>Email</strong></label>
+                        <input type="text" class="form-control" name="email"
+                               placeholder="Nhập email">
+                    </div>
+                </div>
+                 <div class="form-row">
+                    <div class="form-group col-md-5 ml-4">
+                        <label><strong>Ngân hàng</strong></label>
+                        <input type="text" class="form-control" name="bank"
+                               placeholder="Nhập tên ngân hàng">
+                    </div>
+                    <div class="form-group col-md-1"></div>
+                     <div class="form-group col-md-5">
+                        <label><strong>Chi nhánh</strong></label>
+                        <input type="text" class="form-control" name="branch"
+                               placeholder="Nhập tên chi nhánh">
+                    </div>
+                </div>
+                 <div class="form-row">
+                    <div class="form-group col-md-5 ml-4">
+                        <label><strong>Số điện thoại</strong></label>
+                        <input type="text" class="form-control" name="phone_number"
+                               placeholder="Nhập số điện thoại">
+                    </div>
+                </div>
+            </div>
+            <div class="col text-center pb-3">
+                <button type="submit" class="btn btn-info cen">Lọc khách hàng</button>
+            </div>
     </form>
+    </div>
+    <br>
+    {% if messages %}
+        {% for message in messages %}
+            {% if message.level ==  DEFAULT_MESSAGE_LEVELS.ERROR  %}
+                <div class="alert alert-danger">
+                    {{ message }}
+                </div>
+            {% endif %}
+        {% endfor %}
+    {% endif %}
+
     <div class="row">
     <div class="container-fluid">
         <div class="row">
             <div class="col-sm-12 col-md-12 col-lg-12">
                 {% if object_customer %}
             <div class="container">
-                <div class="row">
-                    <table class="table table-hover table-position table-bordered" width="20%">
+                <div class="row text-center">
+                    <table class="table table-hover table-position table-bordered">
                         <thead class="thead-light">
                             <tr>
-                                <th scope="col">Mã khách hàng</th>
+                                <th scope="col">Mã</th>
                                 <th scope="col">Họ tên</th>
-                                <th scope="col">Ngày sinh </th>
+{#                                <th scope="col">Ngày sinh </th>#}
                                 <th scope="col">Giới tính</th>
-                                <th scope="col">Địa chỉ</th>
+{#                                <th scope="col">Địa chỉ</th>#}
                                 <th scope="col">Số điện thoại</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Chỉnh sửa</th>
@@ -63,17 +113,20 @@
                             {% for object in object_customer %}
                                 <tr>
                                     <td>{{ object.customer_id }}</td>
-                                    <td>{{ object.full_name }}</td>
-                                    <td>{{ object.birthday }}</td>
+                                    <td><a class= 'golink' href="{% url 'profile_customer' object.customer_id %}">{{ object.full_name }}</a></td>
+{#                                    <td>{{ object.birthday}}</td>#}
                                     {% if object.gender == 'M' %}
-                                        <td>Nam</td>
-                                        {% else %}
+                                            <td>Nam</td>
+                                        {% elif object.gender == 'W' %}
                                             <td>Nữ</td>
+                                        {% else %}
+                                            <td>Không giới tính</td>
                                     {% endif %}
-                                    <td>{{ object.address }}</td>
+{#                                    <td>{{ object.address }}</td>#}
                                     <td>{{ object.phone_number }}</td>
                                     <td>{{ object.email }}</td>
-                                    <td><button type="button">Edit</button></td>
+                                    <td><button type="button" class="btn btn-outline-primary">
+                                        Edit</button></td>
                                 </tr>
                             {% endfor %}
 

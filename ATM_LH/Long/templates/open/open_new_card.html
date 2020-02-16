@@ -19,73 +19,77 @@
     </style>
 </head>
 <body>
-    {% block title %}
-            Mở thẻ
-    {% endblock %}
-
+    {% block title %}Mở thẻ{% endblock %}
     {% block content %}
-        <h2>Mở thêm thẻ</h2>
+        <div class="col-sm-4 col-md-4 col-lg-4 text-info mt-3"><h3>Mở thêm thẻ</h3></div>
     {% if messages %}
         {% for message in messages %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger alert-dismissible fade show" role="alert">
                     {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
             {% endif %}
             {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <div class="alert alert-success">
+                <div class="alert alert-success alert-dismissible fade show" role="alert">
                     {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
             {% endif %}
         {% endfor %}
     {% endif %}
-    <form method="post" action="{% url 'open_card' %}">
+    <form method="post" action="{% url 'open_card' %}" class="needs-validation" novalidate>
         {% csrf_token %}
-        <div>
-            <div>
-            <span>
-            <label>
-                <h4> Số tài khoản </h4>
-            </label>
-        </span>
-            <div>
-                <input type="text" name="id_account">
+        <div class="form-group">
+            <div class="form-row">
+                <div class="form-group col-md-5 mt-3 ml-4">
+                    <label><strong> Số tài khoản </strong></label>
+                    <input type="number" class="form-control" name="id_account" placeholder="Nhập số tài khoản">
+                </div>
             </div>
-
-        </div>
-
-        <div>
-            <span>
-            <label>
-                <h4> Họ và tên </h4>
-            </label>
-        </span>
-            <div>
-                <input type="text" name="customer_name">
+         <div class="form-group">
+            <div class="form-row">
+                <div class="form-group col-md-5 mt-3 ml-4">
+                    <label><strong> Số tài khoản </strong></label>
+                    <input type="text" name="customer_name" class="form-control" placeholder="Nhập họ tên">
+                </div>
+            </div>
+        <div class="form-group">
+            <div class="form-row">
+                <div class="form-group col-md5 mt-3 ml-4">
+                    <div class="form-row ml-1">
+                        <label><strong> Lựa chọn loại giấy tờ </strong></label>
+                    </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="card_type" value="1">
+                  <label class="form-check-label">Thẻ tín dụng</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="card_type" value="2">
+                  <label class="form-check-label">Thẻ ATM</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="card_type" value="3">
+                  <label class="form-check-label">Thẻ ghi nợ</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="card_type" value="4">
+                  <label class="form-check-label">Thẻ đảm bảo</label>
+                </div>
+                <div class="form-check form-check-inline">
+                  <input class="form-check-input" type="radio" name="card_type" value="5">
+                  <label class="form-check-label">Thẻ Visa</label>
+                </div>
+                </div>
+            </div>
             </div>
         </div>
-
-        <div>
-            <span>
-            <label>
-                <h4> Lựa chọn loại giấy tờ</h4>
-            </label>
-        </span>
-            <div style="color: #1b1e21">
-                <input type="radio" name="card_type" value="1">
-                <label>Thẻ tín dụng</label>
-                <input type="radio" name="card_type" value="2">
-                <label>Thẻ ATM</label>
-                <input type="radio" name="card_type" value="3">
-                <label>Thẻ ghi nợ</label>
-                <input type="radio" name="card_type" value="4">
-                <label>Thẻ đảm bảo</label>
-                <input type="radio" name="card_type" value="5">
-                <label>Thẻ Visa</label>
-            </div>
-        </div>
+            <button type="submit" class="btn btn-info ml-4">Đăng ký </button>
     </div>
-            <button type="submit">Đăng ký </button>
     </form>
         <div class="golink">
         <a href="{% url 'home' %}">Trang chủ</a>

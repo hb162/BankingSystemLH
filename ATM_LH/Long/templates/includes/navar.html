@@ -1,14 +1,14 @@
-<nav class="navbar navbar-light bg-light">
-  <form class="form-inline">
+<nav class="nav navbar-light bg-light">
+  <form class="form">
     {% if request.user.is_authenticated %}
-      <div class="p-2">
-        <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm" role="button">Đăng xuất</a>
-      </div>
-        <div class="p-2" style="left: 200px;">
-            <a href="{% url 'change_password' %}" class="btn btn-secondary btn-sm" role="button" >Thay đổi mật khẩu</a>
-        </div>
+            <div class="btn-group">
+                <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm" role="button"><small>Đăng xuất</small></a>
+                <a href="{% url 'change_password' %}" class="btn btn-secondary btn-sm" role="button" >
+                    <small>Thay đổi mật khẩu</small></a>
+            </div>
+            <div class="text-primary" style="float: right"><small>Chào <strong>{{request.user.username}}</strong></small></div>
     {% else %}
-      <a href="{% url 'login' %}" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">Đăng nhập</a>
+      <a href="{% url 'login' %}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Đăng nhập</a>
     {% endif %}
   </form>
 </nav>

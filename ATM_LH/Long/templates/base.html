@@ -30,5 +30,18 @@
         {% endblock %}
     </main>
     {% block scripts %}{% endblock scripts %}
+    <footer class="bg-light">
+        <div class="container-fluid padding">
+            <div class="row text-sm-right">
+                <div class="col-12">
+                     {% if request.user.is_authenticated %}
+                        <div class="golink">
+                            <a href="{% url 'home' %}">Trang chủ</a>
+                        </div>
+                     {% endif %}
+                </div>
+            </div>
+        </div>
+    </footer>
 </body>
 </html>
