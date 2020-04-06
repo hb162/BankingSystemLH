@@ -8,58 +8,68 @@
             <h1 class="display-4">Chuyển tiền liên ngân hàng</h1>
             <hr>
             <div class="row">
-                <div class="col">
-                    <label>Tài khoản chuyển:</label>
-                    <div class="col">
-                        <input type="text" readonly class="form-control-plaintext text-center" id="sender" name="sender"
+                <div class="col-sm-5">
+                    <label for="sender" class="form-label">Tài khoản chuyển:</label>
+                </div>
+                    <div class="col-sm-7">
+                        <input type="text" readonly class="form-control-plaintext my-text text-center" id="sender" name="sender"
                                value="{{ usr }}">
                     </div>
                 </div>
-            </div>
+            <br>
             <div class="row">
-                <div class="col">
-                    <label>Số dư:</label>
-                    <div class="col">
-                        <input type="text" readonly class="form-control-plaintext text-center" id="balance"
-                               name="balance" value="{{ balance }} VNĐ">
+                <div class="col-sm-5">
+                    <label for="balance" class="form-label">Số dư (VNĐ):</label>
+                </div>
+                    <div class="col-sm-7">
+                        <input type="text" readonly class="form-control-plaintext my-text text-center" id="balance"
+                               name="balance" value="{{ balance }}">
                     </div>
                 </div>
-            </div>
+            <br>
             <div class="row">
-                <div class="col">
-                    <label>Số tài khoản nhận:</label>
-                    <div class="col">
+                <div class="col-sm-5">
+                    <label for="receive-acc" class="form-label">Số tài khoản nhận:</label>
+                </div>
+                    <div class="col-sm-7">
                         <input type="text" class="form-control plaintext text-center" id="receive-acc"
                                name="receive-acc" required>
                     </div>
                 </div>
-            </div>
+            <br>
             <div class="row">
-                <div class="col">
-                    <label>Tên người nhận:</label>
-                    <div class="col">
+                <div class="col-sm-5">
+                    <label for="name" class="form-label">Tên người nhận:</label>
+                </div>
+                    <div class="col-sm-7">
                         <input type="text" class="form-control plaintext text-center" id="name" name="name" required>
                     </div>
                 </div>
-            </div>
+            <br>
             <div class="row">
-                <div class="col">
-                    <label>Ngân hàng nhận:</label>
-                    <select id="bank" name="ngan_hang" class="form-control">
-                        <option value="No">------------</option>
+                <div class="col-sm-5">
+                    <label for="bank" class="form-label">Ngân hàng nhận:</label>
+                </div>
+                <div class="col-sm-7">
+                    <select id="bank" name="ngan_hang" class="form-control my-select text-center banki">
+                        <option value="No"></option>
                         <option value="TCB">Techcombank</option>
                         <option value="AGRB">Agribank</option>
                     </select>
                 </div>
             </div>
+            <br>
             <div class="row">
-                <div class="col">
-                    <label>Chi nhánh:</label>
-                    <select id="branch" name="branch" class="form-control">
-                        <option value="">-----------</option>
+                <div class="col-sm-5">
+                    <label for="branch" class="form-label">Chi nhánh:</label>
+                </div>
+                <div class="col-sm-7">
+                    <select id="branch" name="branch" class="form-control my-select text-center bran">
+                        <option value=""></option>
                     </select>
                 </div>
             </div>
+            <br>
             <script>
                 $(document).ready(function () {
                     $("#bank").change(function () {
@@ -73,32 +83,34 @@
                                     "<option value='AGR3'>Agribank Q7, TP.HCM</option><option value='AGR4'>Agribank Ngo Quyen, Hai Phong</option>");
                                 break;
                             default:
-                                $("#branch").html("<option value=''>---------</option>");
+                                $("#branch").html("<option value=''></option>");
                         }
                     });
                 });
             </script>
             <div class="row">
-                <div class="col">
-                    <label>Số tiền:</label>
-                    <div class="col">
-                        <input type="text" class="form-control plaintext text-center" name="amount" id="amount"
-                               required>
-                    </div>
+                <div class="col-sm-5">
+                    <label for="amount" class="form-label">Số tiền:</label>
+                </div>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control plaintext text-center" name="amount" id="amount"
+                           required>
                 </div>
             </div>
+            <br>
             <div class="row">
-                <div class="col">
-                    <label>Nội dung:</label>
-                    <div class="col">
-                        <input type="text" class="form-control plaintext text-center" name="content" id="content"
-                               maxlength="100" required>
-                    </div>
+                <div class="col-sm-5">
+                    <label for="content" class="form-label">Nội dung:</label>
+                </div>
+                <div class="col-sm-7">
+                    <input type="text" class="form-control plaintext text-center" name="content" id="content"
+                           maxlength="100" required>
                 </div>
             </div>
+            <br>
             <div class="row">
                 <div class="col">
-                    <button type="submit" class="btn btn-primary">Xác nhận</button>
+                    <button type="submit" class="btn my-btn btn-primary">Xác nhận</button>
                 </div>
             </div>
             <p class="lead">{{ message }}</p>

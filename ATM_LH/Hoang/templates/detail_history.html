@@ -3,10 +3,104 @@
 {% block title %}Lịch sử giao dịch{% endblock %}
 {% block content %}
     <div class="container">
-        <form method="POST" class="withdrawal text-center">
+        <form class="withdrawal text-center">
             {% csrf_token %}
             <h1 class="display-4">Chi tiết giao dịch</h1>
             <hr>
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Ngày giao dịch</label>
+                </div>
+                <div class="col-md-6">
+                   <input type="text" class="form-control info plaintext text-center" disabled value="{{ date }}">
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Số tiền giao dịch</label>
+                </div>
+                <div class="col-md-6">
+                   <input type="text" class="form-control info plaintext text-center" disabled value="{{ amount }}">
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Loại tiền</label>
+                </div>
+                <div class="col-md-6">
+                   <input type="text" class="form-control info plaintext text-center" disabled value="VNĐ">
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Tài khoản chuyển</label>
+                </div>
+                <div class="col-md-6">
+                   <input type="text" class="form-control info plaintext text-center" disabled value="{{ usr }}">
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Tên nguời chuyển</label>
+                </div>
+                <div class="col-md-6">
+                   <input type="text" class="form-control info plaintext text-center" disabled value="{{ name }}">
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Ngân hàng chuyển</label>
+                </div>
+                <div class="col-md-6">
+                   <input type="text" class="form-control info plaintext text-center" disabled value="Vietinbank {{ branch }}">
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Tài khoản nhận</label>
+                </div>
+                <div class="col-md-6">
+                    {% if receive_acc == None %}
+                        <input type="text" class="form-control info plaintext text-center" disabled value="">
+                    {% else %}
+                        <input type="text" class="form-control info plaintext text-center" disabled value="{{ receive_acc }}">
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Tên nguời nhận</label>
+                </div>
+                <div class="col-md-6">
+                   {% if receiver == None %}
+                        <input type="text" class="form-control info plaintext text-center" disabled value="">
+                    {% else %}
+                        <input type="text" class="form-control info plaintext text-center" disabled value="{{ receiver }}">
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="history">
+            <div class="row">
+                <div class="col-md-4">
+                    <label>Trạng thái</label>
+                </div>
+                <div class="col-md-6">
+                    {% if status == "1" %}
+                        <input type="text" class="form-control info plaintext text-center" disabled value="Thành công">
+                    {% else %}
+                        <input type="text" class="form-control info plaintext text-center" disabled value="Thất bại">
+                    {% endif %}
+                </div>
+            </div>
+            <hr class="history">
+        <a href="{% url 'history' %}" class="btn btn-primary">Quay lại</a>
         </form>
     </div>
 {% endblock %}

@@ -7,56 +7,43 @@
             {% csrf_token %}
             <h1 class="display-4">Giao dịch rút tiền</h1>
             <hr>
-            <div class="btn-group-vertical">
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_100" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="100000"/>
-                    </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <input id="id_100" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="100000"/>
                 </div>
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_200" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="200000"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_300" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="300000"/>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_500" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="500000"/>
-                    </div>
+                <div class="form-group col-md-6">
+                    <input id="id_200" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="200000"/>
                 </div>
             </div>
-
-            <div class="btn-group-vertical">
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_1000" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="1000000"/>
-                    </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <input id="id_300" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="300000"/>
                 </div>
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_2000" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="2000000"/>
-                    </div>
+                <div class="form-group col-md-6">
+                    <input id="id_500" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="500000"/>
                 </div>
-                <div class="row">
-                    <div class="form-group col">
-                        <input id="id_5000" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
-                               value="5000000"/>
-                    </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <input id="id_1000" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="1000000"/>
                 </div>
-                <div class="row">
-                    <div class="form-group col">
-                        <a href="{% url 'another' %}" class="btn btn-primary btn-lg btn-money">Số khác</a>
-                    </div>
+                <div class="form-group col-md-6">
+                    <input id="id_2000" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="2000000"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="form-group col-md-6">
+                    <input id="id_5000" type="submit" name="amount" class="btn btn-primary btn-lg btn-money"
+                           value="5000000"/>
+                </div>
+                <div class="form-group col-md-6">
+                    <a href="{% url 'another' %}" class="btn btn-primary btn-lg btn-money text-center">Số khác</a>
                 </div>
             </div>
             <div>
