@@ -1,12 +1,31 @@
 {% extends 'base.html' %}
 {% load static %}
-{% block title %}Lịch sử giao dịch{% endblock %}
+{% block title %}Tìm kiếm giao dịch{% endblock %}
 {% block content %}
-    <div class="container ">
-        <form method="GET" class="withdrawal text-center">
+    <div class="container">
+        <form method="get" class="withdrawal text-center">
             {% csrf_token %}
-            <h1 class="display-4">Lịch sử giao dịch</h1>
+            <h1 class="display-4">Tìm kiếm cơ bản</h1>
             <hr>
+            <div class="my-search">
+                <div class="row d-flex justify-content-center">
+                    <label for="time-select" class="form-label">Khoảng thời gian</label>
+                </div>
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-5">
+                        <select class="form-control my-select" name="time-select">
+                            <option value="7">Một tuần gần đây</option>
+                            <option value="14">Hai tuần gần đây</option>
+                            <option value="30">Một tháng gần đây</option>
+                            <option value="180">Sáu tháng gần đây</option>
+                            <option value="365">Một năm gần đây</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary">Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
             <div class="row my-row">
                 <div class="col-sm-3 my-col">
                     <label>Ngày</label>
@@ -20,7 +39,6 @@
                 <div class="col-sm-2 my-col">
                     <label>Số tiền</label>
                 </div>
-
             </div>
             <div class="row my-row">
                 <div class="col-sm-3 my-col">
@@ -71,9 +89,5 @@
                 </div>
             </div>
         </form>
-        <div class="d-flex justify-content-center">
-            <a href="{% url 'normal_search' %}" class="btn btn-primary" style="margin-right:10px;">Tìm kiếm cơ bản</a>
-            <a href="{% url 'advanced_search' %}" class="btn btn-primary">Tìm kiếm nâng cao</a>
-        </div>
     </div>
 {% endblock %}

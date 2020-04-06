@@ -8,25 +8,24 @@
             {% csrf_token %}
             <h1 class="display-4">Nhập mệnh giá</h1>
             <hr>
-            <div class="input-group mb-4 another">
-                <input type="text" class="form-control another-val" placeholder="Mệnh giá">
-                <div class="input-group-append">
-                    <input id="id_money" type="submit" name="amount" class="btn btn-primary another-val"
-                           onkeypress="isInputNumber(event)"
-                           value="Xác nhận"/>
-                    <script>
-                        function isInputNumber(evt) {
-                            var ch = String.fromCharCode(evt.which);
-                            if (!(/[0-9]/.test(ch))) {
-                                evt.preventDefault();
-                            }
-                        }
-                    </script>
+            <div class="row justify-align-center">
+                <label class="form-label" for="amount">Vui lòng nhập mệnh giá</label>
+            </div>
+            <div class="row">
+                <input type="text" name="amount" class="form-control plaintext text-center" required placeholder="Mệnh giá">
+            </div>
+            <div class="row">
+                <div class="col">
+                    <button type="submit" class="btn btn-primary my-btn ">Xác nhận</button>
+                    <a href="{% url 'withdrawal' %}" class="btn btn-primary my-btn ">Quay lại</a>
                 </div>
             </div>
         </form>
-        <div class="another-message">
-            <h3 style="color: #cb0000">{{ message }}</h3>
+        <div class="row">
+            <div class="col">
+                <h3 class="another-message" style="color: #cb0000">{{ message }}</h3>
+            </div>
         </div>
     </div>
+
 {% endblock %}

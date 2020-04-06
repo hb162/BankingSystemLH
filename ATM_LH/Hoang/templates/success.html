@@ -1,0 +1,20 @@
+{% extends 'base.html'  %}
+{% load static %}
+{% block title %}Thông báo giao dịch{% endblock %}
+{% block content %}
+    <div class="container">
+        <form method="POST" class="withdrawal text-center">
+            {% csrf_token %}
+            <h1 class="display-4">Thông báo giao dịch</h1>
+            <hr>
+            <h2 style="color: #3078b8">Giao dịch thành công</h2>
+            <h2 style="color: #3078b8">Bạn có muốn thực hiện giao dịch khác?</h2>
+            <div class="row">
+                <div class="col">
+                    <a href="{% url 'dashboard' %}" class="btn my-btn btn-primary">Xác nhận</a>
+                    <a href="{% url 'logout' %}" class="btn my-btn btn-primary">Thoát</a>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

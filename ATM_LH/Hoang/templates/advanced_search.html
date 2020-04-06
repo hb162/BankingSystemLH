@@ -1,0 +1,77 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Tìm kiếm nâng cao{% endblock %}
+{% block content %}
+    <div class="container">
+        <form method="get" class="withdrawal text-center">
+            {% csrf_token %}
+            <h1 class="display-4">Tìm kiếm nâng cao</h1>
+            <hr>
+            <div style="height: 250px; width: 1110px; background-color: #e9ecef; border: 1px solid #e9ecef;">
+                <div class="row">
+                    <label for="transaction-type" class="form-label transaction-type">Kiểu giao dịch</label>
+                </div>
+{#                <div class="row">#}
+{#                    <div class="col-md-5">#}
+{#                        <select class="form-control my-select" name="transaction-type">#}
+{#                            <option value="0">------------------</option>#}
+{#                            <option value="rt">Rút tiền</option>#}
+{#                            <option value="ckc">Chuyển khoản trong</option>#}
+{#                            <option value="ckk">Chuyển khoản ngoài</option>#}
+{#                        </select>#}
+{#                    </div>#}
+{#                </div>#}
+{#                <br>#}
+                <div class="row">
+                    <div class="col-md-6">
+                        <label for="first-date" class="form-label transaction-type">Ngày bắt đầu</label>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="end-date" class="form-label">Ngày kết thúc</label>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-center">
+                            <input id="datepicker1" name="first-date" width="300" class="my-select" required/>
+                            <script>
+                                $('#datepicker1').datepicker({
+                                    uiLibrary: 'bootstrap4'
+                                });
+                            </script>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="d-flex justify-content-center">
+                            <input id="datepicker2" name="end-date" width="300" class="my-select" required/>
+                            <script>
+                                $('#datepicker2').datepicker({
+                                    uiLibrary: 'bootstrap4'
+                                });
+                            </script>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button type="submit" class="btn my-btn btn-primary">Tìm kiếm</button>
+                    </div>
+                </div>
+            </div>
+            <div class="row my-row">
+                <div class="col-sm-3 my-col">
+                    <label>Ngày</label>
+                </div>
+                <div class="col-sm-2 my-col">
+                    <label>Loại giao dịch</label>
+                </div>
+                <div class="col-sm-4 my-col">
+                    <label>Nội dung</label>
+                </div>
+                <div class="col-sm-2 my-col">
+                    <label>Số tiền</label>
+                </div>
+            </div>
+        </form>
+    </div>
+{% endblock %}

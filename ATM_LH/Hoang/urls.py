@@ -13,8 +13,11 @@ urlpatterns = [
     path('transferex/confirm_transfer_out', views.confirm_external, name='confirm_ex'),
     path('opencard/', views.open_card, name='opencard'),
     path('logout/', views.logout_view, name='logout'),
-    path('forgot/', views.forgot_view, name='forgot'),
+    path('change_pass/', views.change_pass_view, name='change_pass'),
     path('profile/', views.profile_view, name='profile'),
     path('history/', views.history_view, name='history'),
     path('history/<int:transaction_id>/', views.detail_history, name='detail'),
+    path('success/', views.success_view, name='success'),
+    path('history/normal_search/', views.normal_search, name='normal_search'),
+    path('history/advanced_search', views.advanced_search, name='advanced_search'),
 ]

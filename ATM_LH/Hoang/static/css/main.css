@@ -64,9 +64,19 @@ html, body {
     padding-bottom: 1rem;
 }
 
-.jumbotron {
-    padding: 1rem;
-    border-radius: 0;
+/*.jumbotron {*/
+/*    padding: 1rem;*/
+/*    border-radius: 0;*/
+/*}*/
+.mega-menu{
+    width: 900px;
+    overflow: hidden;
+    padding:10px;
+}
+
+.mega-menu a{
+    text-decoration: none;
+    color: darkcyan;
 }
 
 .padding {
@@ -84,6 +94,16 @@ html, body {
     width: 95%;
     margin-bottom: 1rem;
     margin-top: .3rem;
+}
+
+.intro{
+    margin-top: 30px;
+    margin-left:10px;
+}
+
+.fa-credit-card-alt{
+    color:#008fd5;
+    margin-left: 90px;
 }
 
 .fa-money {
@@ -140,7 +160,7 @@ footer {
     background-color: #3078b8;
     color: #d5d5d5;
     padding-top: 2rem;
-    margin-top: 92px;
+    margin-top: 80px;
 }
 
 hr.light {
@@ -154,12 +174,9 @@ hr.light {
 }
 
 .btn-money{
-    width: 150px;
-    height: 50px;
-    margin-left: 50px;
-    margin-right: 90px;
+    width: 200px;
+    height: 60px;
     margin-top:30px;
-    margin-bottom: 30px;
 }
 
 .another{
@@ -167,12 +184,105 @@ hr.light {
     margin-bottom: 60px;
 }
 
-.another-message{
-    margin-bottom: 100px;
-}
-
 .another-val{
     height:55px;
+}
+
+.another-message{
+    margin-top: 35px;
+    text-align: center;
+}
+
+.history{
+    margin-top:8px;
+}
+
+.form-control:disabled{
+    background-color: #fff;
+}
+
+.info{
+    border: 0;
+    border-radius: 0;
+}
+
+.paginator{
+    margin-top: 33px;
+}
+
+.form-label{
+    font-weight: bold;
+    margin: 0 0 0.71429em 0;
+    display: block;
+    color: #979fa6;
+    vertical-align: top;
+    word-wrap: break-word
+}
+
+.my-btn{
+    margin-top: 30px;
+    margin-left: 30px;
+    margin-right:30px;
+    width:100px;
+    height: 39px;
+}
+
+.my-text{
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+}
+
+.my-select{
+    border: 1px solid #00aced;
+    text-align: center;
+    color: #3078b8;
+}
+
+.banki{
+    text-indent: 250px;
+}
+
+.bran{
+    text-indent:172px;
+}
+
+.my-search{
+    background-color: #e9ecef;
+    border: 1px solid #e9ecef;
+    width:1110px;
+    height: 155px;
+    margin-bottom:10px;
+}
+
+.my-flex{
+    margin-top:100px;
+    margin-bottom:40px;
+}
+
+#menu1{
+    background-color: #e9ecef;
+    border: 1px solid #e9ecef;
+    margin-left:15px;
+    width:1100px;
+    height: 140px;
+}
+
+#menu2{
+    height:280px;
+    width:1100px;
+    margin-left:15px;
+    background-color: #e9ecef;
+    border: 1px solid #e9ecef;
+}
+
+.transaction-type{
+    margin-left: 20px;
+}
+
+.search-type{
+    margin-top:10px;
+    margin-left: 400px;
+    margin-bottom: 10px;
 }
 
 @media (max-width: 992px) {
@@ -181,7 +291,6 @@ hr.light {
         padding: 2rem;
     }
 }
-
 
 @media (max-width: 766px) {
     .carousel-caption {
@@ -220,6 +329,7 @@ hr.light {
         padding: 1.2rem;
     }
 }
+
 @media (max-width: 576px) {
     .carousel-caption {
         top: 50%;

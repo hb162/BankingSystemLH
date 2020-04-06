@@ -1,4 +1,5 @@
 from django.contrib import auth, messages
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 import random
@@ -80,7 +81,7 @@ def login_view(request):
         return render(request, 'login.html')
 
 
-def forgot_view(request):
+def change_pass_view(request):
     if request.method == "POST":
         user = request.POST['usr']
         old_pass = request.POST['old-pas']
@@ -91,22 +92,22 @@ def forgot_view(request):
             if account.password == old_pass:
                 if pass1 == old_pass:
                     message = "Mật khẩu mới không được trùng mật khẩu cũ!"
-                    return render(request, 'forgot_pass.html', {"message": message})
+                    return render(request, 'change_pass.html', {"message": message})
                 elif pass1 != pass2:
                     message = "Mật khẩu nhập lại không khớp!"
-                    return render(request, 'forgot_pass.html', {"message": message})
+                    return render(request, 'change_pass.html', {"message": message})
                 else:
                     message = "Thành công!"
                     account.password = pass1
                     account.save()
-                    return render(request, 'forgot_pass.html', {"message": message})
+                    return render(request, 'change_pass.html', {"message": message})
             else:
                 message = "Mật khẩu cũ không đúng!"
-                return render(request, 'forgot_pass.html', {"message": message})
+                return render(request, 'change_pass.html', {"message": message})
         else:
             message = "Số tài khoản không tồn tại!"
-            return render(request, 'forgot_pass.html', {'message': message})
-    return render(request, 'forgot_pass.html')
+            return render(request, 'change_pass.html', {'message': message})
+    return render(request, 'change_pass.html')
 
 
 def logout_view(request):
@@ -235,7 +236,7 @@ def withdrawal_view(request):
                                                    receiver=None)
                         account.save()
                         atm.save()
-                        return HttpResponse('Rút thành công %d VNĐ' % amount)
+                        return redirect('success')
                 else:
                     err = "Bạn đã tới hạn mức giao dịch!"
                     context = {
@@ -253,15 +254,122 @@ def withdrawal_view(request):
 def another_view(request):
     if request.session.has_key('usr'):
         usr = request.session['usr']
-        context = {
-            'usr': usr
-        }
-        return render(request, 'another_value.html', context)
+        if request.method == 'POST':
+            account = Account.objects.get(account_no=usr)
+            atm = ATM.objects.get(atm_id='ATM01')
+            atm_id = atm
+            bank = Bank.objects.get(bank_id='CTG')
+            bank_id = bank.bank_id
+            card = Card.objects.filter(account_no=usr, card_type='2').first()
+            dt = datetime.datetime.now()
+            start = dt.replace(hour=0, minute=0, second=0, microsecond=0)
+            end = dt.replace(hour=23, minute=59, second=59, microsecond=999999)
+            total = 0
+            money = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(
+                transaction_time__gte=start, transaction_time__lte=end)
+            for i in money:
+                total = total + i.amount
+            print(total)
+            amount = request.POST['amount'] if 'amount' in request.POST else 0
+            try:
+                amount = int(amount)
+            except:
+                return HttpResponse("Lỗi amount")
+            try:
+                if total <= account.limit:
+                    if amount % 10000 != 0:
+                        err = "Số tiền phải là bội của 10000 VNĐ."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'another_value.html', context)
+                    elif amount == 0:
+                        err = "Số tiền phải khác 0 VNĐ."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'another_value.html', context)
+                    elif amount > 5000000:
+                        err = "Số tiền tối đa có thể rút trong 1 lần là 5000000 VNĐ."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'another_value.html', context)
+                    elif total + amount >= account.limit:
+                        err = "Số tiền vượt quá hạn mức."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, "another_value.html", context)
+                    elif account.balance - amount <= 49000:
+                        err = "Tài khoản không đủ tiền để thực hiện giao dịch."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'another_value.html', context)
+                    elif atm.atm_balance < amount or atm.atm_balance - amount < 0:
+                        err = "Cây ATM đã hết tiền."
+                        context = {
+                            'message': err,
+                            'usr': usr
+                        }
+                        return render(request, 'another_value.html', context)
+                    else:
+                        account.balance = account.balance - amount - 1000
+                        atm.atm_balance = atm.atm_balance - amount
+                        Transaction.objects.create(transaction_type='RT',
+                                                   transaction_time=datetime.datetime.now(),
+                                                   amount=amount,
+                                                   balance=account.balance,
+                                                   transaction_fee=1000,
+                                                   content='Rut tien tai cay ATM',
+                                                   receive_account=None,
+                                                   status='1',
+                                                   atm_id=atm_id,
+                                                   bank_id=bank_id,
+                                                   card_no_id=card,
+                                                   receiver=None)
+                        account.save()
+                        atm.save()
+                        return redirect('success')
+                else:
+                    err = "Bạn đã tới hạn mức giao dịch!"
+                    context = {
+                        'usr': usr,
+                        'message': err
+                    }
+                    return render(request, 'another_value.html', context)
+            except:
+                return HttpResponse('Số tiền méo đúng rùi!')
+        else:
+            return render(request, 'another_value.html', {'usr': usr})
+    return render(request, 'another_value.html')
 
 
 def open_card(request):
     if request.session.has_key('usr'):
         usr = request.session['usr']
+        if request.method == "POST":
+            card_type = request.POST['type']
+            try:
+                max_number = 999999999999
+                i = random.randint(0, max_number)
+                i = str(i)
+                Card.objects.create(card_no='9704' + i,
+                                    pin='1',
+                                    create_date=datetime.datetime.now(),
+                                    end_date=datetime.datetime.now()+timedelta(3650),
+                                    card_type=card_type,
+                                    status='1',
+                                    account_no_id=usr)
+                return HttpResponse("Thành công")
+            except:
+                return HttpResponse("sai card")
     return render(request, 'open_card.html', {'usr': usr})
 
 
@@ -379,7 +487,7 @@ def confirm_internal(request):
                                            receiver=receiver)
                 sender.save()
                 receive_acc.save()
-                return HttpResponse("Thành công!")
+                return redirect('success')
             except:
                 return HttpResponse("Lỗi")
     return render(request, 'confirm_transfer_in.html', context)
@@ -497,10 +605,16 @@ def confirm_external(request):
                                            bank_id=bank_id,
                                            receiver=receiver)
                 account.save()
-                return HttpResponse("Thành công")
+                return redirect('success')
             except:
                 return HttpResponse("Lỗi 2")
     return render(request, 'confirm_external.html', context)
+
+
+def success_view(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+        return render(request, 'success.html', {'usr': usr})
 
 
 def history_view(request):
@@ -508,12 +622,12 @@ def history_view(request):
     if request.session.has_key('usr'):
         usr = request.session['usr']
         account = Account.objects.get(account_no=usr)
-        card = Card.objects.get(account_no=account)
+        card = Card.objects.get(account_no_id=account)
         date = []
         content = []
         transaction_type = []
         amount = []
-        transaction = Transaction.objects.filter(card_no_id=card)
+        transaction = Transaction.objects.filter(card_no_id=card).order_by('-transaction_time')[:10]
         for i in transaction:
             date.append(i.transaction_time)
             content.append(i.content)
@@ -536,8 +650,157 @@ def detail_history(request, transaction_id):
         usr = request.session['usr']
         if request.method == "GET":
             trans = get_object_or_404(Transaction, pk=transaction_id)
+            card = trans.card_no
+            acc = card.account_no_id
+            account = Account.objects.get(account_no=acc).customer_id
+            customer = Customer.objects.get(customer_id=account)
+            branch = Branch.objects.get(branch_id='CTG01')
             context = {
                 'usr': usr,
-                'trans': trans
+                'send_account': trans,
+                'name': customer.full_name,
+                'date': trans.transaction_time,
+                'amount': trans.amount,
+                'bank': trans.bank_id,
+                'branch': branch.branch_name,
+                'receive_acc': trans.receive_account,
+                'receiver': trans.receiver,
+                'status': trans.status,
             }
     return render(request, 'detail_history.html', context)
+
+
+def normal_search(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+        account = Account.objects.get(account_no=usr)
+        card = Card.objects.get(account_no_id=account)
+        if request.method == "GET":
+            time_select = request.GET['time-select'] if 'time-select' in request.GET else 0
+            date = []
+            content = []
+            transaction_type = []
+            amount = []
+            try:
+                if time_select == '7':
+                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(7))
+                    for i in trans:
+                        date.append(i.transaction_time)
+                        content.append(i.content)
+                        transaction_type.append(i.transaction_type)
+                        amount.append(i.amount)
+                    context = {
+                        'usr': usr,
+                        'date': date,
+                        'content': content,
+                        'type': transaction_type,
+                        'amount': amount,
+                        'transaction': trans,
+                    }
+                    return render(request, 'normal_search.html', context)
+                elif time_select == '14':
+                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(14))
+                    for i in trans:
+                        date.append(i.transaction_time)
+                        content.append(i.content)
+                        transaction_type.append(i.transaction_type)
+                        amount.append(i.amount)
+                    context = {
+                        'usr': usr,
+                        'date': date,
+                        'content': content,
+                        'type': transaction_type,
+                        'amount': amount,
+                        'transaction': trans,
+                    }
+                    return render(request, 'normal_search.html', context)
+                elif time_select == '30':
+                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(30))
+                    for i in trans:
+                        date.append(i.transaction_time)
+                        content.append(i.content)
+                        transaction_type.append(i.transaction_type)
+                        amount.append(i.amount)
+                    context = {
+                        'usr': usr,
+                        'date': date,
+                        'content': content,
+                        'type': transaction_type,
+                        'amount': amount,
+                        'transaction': trans,
+                    }
+                    return render(request, 'normal_search.html', context)
+                elif time_select == '180':
+                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(180))
+                    for i in trans:
+                        date.append(i.transaction_time)
+                        content.append(i.content)
+                        transaction_type.append(i.transaction_type)
+                        amount.append(i.amount)
+                    context = {
+                        'usr': usr,
+                        'date': date,
+                        'content': content,
+                        'type': transaction_type,
+                        'amount': amount,
+                        'transaction': trans,
+                    }
+                    return render(request, 'normal_search.html', context)
+                elif time_select == '365':
+                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(365))
+                    for i in trans:
+                        date.append(i.transaction_time)
+                        content.append(i.content)
+                        transaction_type.append(i.transaction_type)
+                        amount.append(i.amount)
+                    context = {
+                        'usr': usr,
+                        'date': date,
+                        'content': content,
+                        'type': transaction_type,
+                        'amount': amount,
+                        'transaction': trans,
+                    }
+                    return render(request, 'normal_search.html', context)
+            except:
+                return HttpResponse("Looix")
+
+    return render(request, 'normal_search.html')
+
+
+def advanced_search(request):
+    if request.session.has_key('usr'):
+        usr = request.session['usr']
+        account = Account.objects.get(account_no=usr)
+        card = Card.objects.get(account_no_id=account)
+        if request.method == "GET":
+            # trans_type = request.GET['transaction-type'] if 'transaction-type' in request.GET else 0
+            f_date = request.GET['first-date'] if 'first-date' in request.GET else 0
+            e_date = request.GET['end-date'] if 'end-date' in request.GET else 0
+            date = []
+            content = []
+            transaction_type = []
+            amount = []
+            try:
+                if f_date != 0 and e_date != 0:
+                    trans = Transaction.objects.filter(card_no_id=card).filter(transaction_time__gte=f_date, transaction_time__lte=e_date)
+                    for i in trans:
+                        date.append(i.transaction_time)
+                        content.append(i.content)
+                        transaction_type.append(i.transaction_type)
+                        amount.append(i.amount)
+                    context = {
+                        'usr': usr,
+                        'date': date,
+                        'content': content,
+                        'type': transaction_type,
+                        'amount': amount,
+                        'transaction': trans,
+                    }
+                    return render(request, 'advanced_search.html', context)
+                else:
+                    return render(request, 'advanced_search.html')
+            except:
+                return HttpResponse("lỖI")
+
+    return render(request, 'advanced_search.html')
