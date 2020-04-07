@@ -1,15 +1,15 @@
 from django.contrib import auth, messages
-from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import render, redirect, get_object_or_404
 from django.http import HttpResponse, Http404
 import random
 from datetime import timedelta
 import datetime
+from .serializers import AccountSerializer, CustomerSerializer, CardSerializer
+from rest_framework import viewsets, permissions
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from Long.models import ATM, Branch, Bank
 from Hoang.models import Account, Customer, Transaction, Card
-from django.db.models import Sum
 
 
 def signup_view(request):
@@ -79,6 +79,21 @@ def login_view(request):
             return render(request, 'login.html', {"err": err})
     else:
         return render(request, 'login.html')
+
+
+class AccountView(viewsets.ModelViewSet):
+    queryset = Account.objects.all()
+    serializer_class = AccountSerializer
+
+
+class CustomerView(viewsets.ModelViewSet):
+    queryset = Customer.objects.all()
+    serializer_class = CustomerSerializer
+
+
+class CardView(viewsets.ModelViewSet):
+    queryset = Card.objects.all()
+    serializer_class = CardSerializer
 
 
 def change_pass_view(request):
@@ -174,7 +189,8 @@ def withdrawal_view(request):
             end = dt.replace(hour=23, minute=59, second=59, microsecond=999999)
             total = 0
             # tổng số tiền rút 1 ngày
-            money = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(transaction_time__gte=start, transaction_time__lte=end)
+            money = Transaction.objects.filter(card_no_id=card, transaction_type='RT').filter(
+                transaction_time__gte=start, transaction_time__lte=end)
             for i in money:
                 total = total + i.amount
             amount = request.POST['amount'] if 'amount' in request.POST else 0
@@ -363,7 +379,7 @@ def open_card(request):
                 Card.objects.create(card_no='9704' + i,
                                     pin='1',
                                     create_date=datetime.datetime.now(),
-                                    end_date=datetime.datetime.now()+timedelta(3650),
+                                    end_date=datetime.datetime.now() + timedelta(3650),
                                     card_type=card_type,
                                     status='1',
                                     account_no_id=usr)
@@ -675,132 +691,64 @@ def normal_search(request):
         usr = request.session['usr']
         account = Account.objects.get(account_no=usr)
         card = Card.objects.get(account_no_id=account)
+
         if request.method == "GET":
             time_select = request.GET['time-select'] if 'time-select' in request.GET else 0
-            date = []
-            content = []
-            transaction_type = []
-            amount = []
             try:
+                trans_time = datetime.datetime.now()
                 if time_select == '7':
-                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(7))
-                    for i in trans:
-                        date.append(i.transaction_time)
-                        content.append(i.content)
-                        transaction_type.append(i.transaction_type)
-                        amount.append(i.amount)
-                    context = {
-                        'usr': usr,
-                        'date': date,
-                        'content': content,
-                        'type': transaction_type,
-                        'amount': amount,
-                        'transaction': trans,
-                    }
-                    return render(request, 'normal_search.html', context)
+                    trans_time = trans_time - timedelta(7)
                 elif time_select == '14':
-                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(14))
-                    for i in trans:
-                        date.append(i.transaction_time)
-                        content.append(i.content)
-                        transaction_type.append(i.transaction_type)
-                        amount.append(i.amount)
-                    context = {
-                        'usr': usr,
-                        'date': date,
-                        'content': content,
-                        'type': transaction_type,
-                        'amount': amount,
-                        'transaction': trans,
-                    }
-                    return render(request, 'normal_search.html', context)
+                    trans_time = trans_time - timedelta(14)
                 elif time_select == '30':
-                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(30))
-                    for i in trans:
-                        date.append(i.transaction_time)
-                        content.append(i.content)
-                        transaction_type.append(i.transaction_type)
-                        amount.append(i.amount)
-                    context = {
-                        'usr': usr,
-                        'date': date,
-                        'content': content,
-                        'type': transaction_type,
-                        'amount': amount,
-                        'transaction': trans,
-                    }
-                    return render(request, 'normal_search.html', context)
+                    trans_time = trans_time - timedelta(30)
                 elif time_select == '180':
-                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(180))
-                    for i in trans:
-                        date.append(i.transaction_time)
-                        content.append(i.content)
-                        transaction_type.append(i.transaction_type)
-                        amount.append(i.amount)
-                    context = {
-                        'usr': usr,
-                        'date': date,
-                        'content': content,
-                        'type': transaction_type,
-                        'amount': amount,
-                        'transaction': trans,
-                    }
-                    return render(request, 'normal_search.html', context)
+                    trans_time = trans_time - timedelta(180)
                 elif time_select == '365':
-                    trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=datetime.datetime.now()-timedelta(365))
-                    for i in trans:
-                        date.append(i.transaction_time)
-                        content.append(i.content)
-                        transaction_type.append(i.transaction_type)
-                        amount.append(i.amount)
-                    context = {
-                        'usr': usr,
-                        'date': date,
-                        'content': content,
-                        'type': transaction_type,
-                        'amount': amount,
-                        'transaction': trans,
-                    }
-                    return render(request, 'normal_search.html', context)
+                    trans_time = trans_time - timedelta(365)
+                trans = Transaction.objects.filter(card_no_id=card, transaction_time__lte=trans_time)
+                context = {
+                    'usr': usr,
+                    'transaction': trans,
+                }
+                return render(request, 'normal_search.html', context)
             except:
                 return HttpResponse("Looix")
-
     return render(request, 'normal_search.html')
 
-
-def advanced_search(request):
-    if request.session.has_key('usr'):
-        usr = request.session['usr']
-        account = Account.objects.get(account_no=usr)
-        card = Card.objects.get(account_no_id=account)
-        if request.method == "GET":
-            # trans_type = request.GET['transaction-type'] if 'transaction-type' in request.GET else 0
-            f_date = request.GET['first-date'] if 'first-date' in request.GET else 0
-            e_date = request.GET['end-date'] if 'end-date' in request.GET else 0
-            date = []
-            content = []
-            transaction_type = []
-            amount = []
-            try:
-                if f_date != 0 and e_date != 0:
-                    trans = Transaction.objects.filter(card_no_id=card).filter(transaction_time__gte=f_date, transaction_time__lte=e_date)
-                    for i in trans:
-                        date.append(i.transaction_time)
-                        content.append(i.content)
-                        transaction_type.append(i.transaction_type)
-                        amount.append(i.amount)
-                    context = {
-                        'usr': usr,
-                        'date': date,
-                        'content': content,
-                        'type': transaction_type,
-                        'amount': amount,
-                        'transaction': trans,
-                    }
-                    return render(request, 'advanced_search.html', context)
-                else:
-                    return render(request, 'advanced_search.html')
-            except:
-                return HttpResponse("lỖI")
-
-    return render(request, 'advanced_search.html')
+# def advanced_search(request):
+#     if request.session.has_key('usr'):
+#         usr = request.session['usr']
+#         account = Account.objects.get(account_no=usr)
+#         card = Card.objects.get(account_no_id=account)
+#         if request.method == "GET":
+#             # trans_type = request.GET['transaction-type'] if 'transaction-type' in request.GET else 0
+#             f_date = request.GET['first-date'] if 'first-date' in request.GET else 0
+#             e_date = request.GET['end-date'] if 'end-date' in request.GET else 0
+#             date = []
+#             content = []
+#             transaction_type = []
+#             amount = []
+#             try:
+#                 if f_date != 0 and e_date != 0:
+#                     trans = Transaction.objects.filter(card_no_id=card).filter(transaction_time__gte=f_date, transaction_time__lte=e_date)
+#                     for i in trans:
+#                         date.append(i.transaction_time)
+#                         content.append(i.content)
+#                         transaction_type.append(i.transaction_type)
+#                         amount.append(i.amount)
+#                     context = {
+#                         'usr': usr,
+#                         'date': date,
+#                         'content': content,
+#                         'type': transaction_type,
+#                         'amount': amount,
+#                         'transaction': trans,
+#                     }
+#                     return render(request, 'advanced_search.html', context)
+#                 else:
+#                     return render(request, 'advanced_search.html')
+#             except:
+#                 return HttpResponse("lỖI")
+#
+#     return render(request, 'advanced_search.html')

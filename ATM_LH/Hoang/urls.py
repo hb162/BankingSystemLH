@@ -1,5 +1,11 @@
-from django.urls import path
+from django.urls import path, include
 from . import views
+from rest_framework import routers
+
+router = routers.DefaultRouter()
+router.register('account', views.AccountView)
+router.register('customer', views.CustomerView)
+router.register('card', views.CardView)
 
 urlpatterns = [
     path('login/', views.login_view, name='login'),
@@ -19,5 +25,8 @@ urlpatterns = [
     path('history/<int:transaction_id>/', views.detail_history, name='detail'),
     path('success/', views.success_view, name='success'),
     path('history/normal_search/', views.normal_search, name='normal_search'),
-    path('history/advanced_search', views.advanced_search, name='advanced_search'),
+    # path('history/advanced_search', views.advanced_search, name='advanced_search'),
+    path('', include(router.urls)),
+    path('api-auth/', include('rest_framework.urls'))
+
 ]

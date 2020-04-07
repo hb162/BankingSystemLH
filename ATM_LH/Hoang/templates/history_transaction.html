@@ -23,57 +23,49 @@
 
             </div>
             <div class="row my-row">
+            {% for t in transaction %}
                 <div class="col-sm-3 my-col">
-                    {% for d in date %}
-                        <div class="row">
-                            <input type="text" class="form-control info plaintext text-center" disabled value="{{ d }}">
-                        </div>
-                    {% endfor %}
+                    <div class="row">
+                        <input type="text" class="form-control info plaintext text-center" disabled value="{{ t.transaction_time }}">
+                    </div>
                 </div>
                 <div class="col-sm-2 my-col">
-                    {% for t in type %}
                         <div class="row">
-                            {% if t == "RT" %}
+                            {% if t.transaction_type == "RT" %}
                                 <input type="text" class="form-control info plaintext text-center" disabled
                                        value="Rút tiền">
-                            {% elif t == "CKC" %}
+                            {% elif t.transaction_type == "CKC" %}
                                 <input type="text" class="form-control info plaintext text-center" disabled
                                        value="Chuyển khoản trong">
-                            {% elif t == "CKK" %}
+                            {% elif t.transaction_type == "CKK" %}
                                 <input type="text" class="form-control info plaintext text-center" disabled
                                        value="Chuyển khoản ngoài">
                             {% endif %}
                         </div>
-                    {% endfor %}
                 </div>
                 <div class="col-sm-4 my-col">
-                    {% for c in content %}
                         <div class="row">
-                            <input type="text" class="form-control info plaintext text-center" disabled value="{{ c }}">
+                            <input type="text" class="form-control info plaintext text-center" disabled value="{{ t.content }}">
                         </div>
-                    {% endfor %}
                 </div>
                 <div class="col-sm-2 my-col">
-                    {% for a in amount %}
                         <div class="row">
                             <input type="text" class="form-control info plaintext text-center" disabled
-                                   value="{{ a }} VNĐ">
+                                   value="{{ t.amount }} VNĐ">
                         </div>
-                    {% endfor %}
                 </div>
                 <div class="col-sm-1 my-col">
-                    {% for trans in transaction %}
                         <div class="row">
-                            <a href="{% url 'detail' trans.id %}" class="form-control info" style="color:#0e76ed">Chi
+                            <a href="{% url 'detail' t.id %}" class="form-control info" style="color:#0e76ed">Chi
                                 tiết</a>
                         </div>
-                    {% endfor %}
                 </div>
+            {% endfor %}
             </div>
         </form>
         <div class="d-flex justify-content-center">
             <a href="{% url 'normal_search' %}" class="btn btn-primary" style="margin-right:10px;">Tìm kiếm cơ bản</a>
-            <a href="{% url 'advanced_search' %}" class="btn btn-primary">Tìm kiếm nâng cao</a>
+{#            <a href="{% url 'advanced_search' %}" class="btn btn-primary">Tìm kiếm nâng cao</a>#}
         </div>
     </div>
 {% endblock %}
