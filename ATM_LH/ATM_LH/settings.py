@@ -33,6 +33,7 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'Hoang',
     'Long',
+    'rest_framework',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -132,3 +133,11 @@ STATICFILES_DIRS = [
   os.path.join(BASE_DIR, 'static'),
   '/home/hoang/Desktop/BSP/BankingSystemLH/Hoang/static/',
 ]
+
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': ('rest_framework.permissions.IsAuthenticatedOrReadOnly',),
+    'TEST_REQUEST_DEFAULT_FORMAT': 'json',
+    # 'DEFAULT_AUTHENTICATION_CLASSES': ('')
+}
