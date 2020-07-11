@@ -6,28 +6,59 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
-
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 	<!-- TITLE -->
 	<title>{% block title %}{% endblock title %}</title>
 
 	<!-- STATIC CSS -->
 	<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    {#    CHART.JS#}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.8.0"></script>
 	{% block stylesheet %}{% endblock stylesheet %}
 </head>
 
 <body>
     {% include "includes/navar.html" %}
     <main class="container">
-        {% block customer_result %}
-
-        {% endblock %}
-    	{% block content %}
-
-    	{% endblock content %}
+        {% block customer_result %}{% endblock %}
+    	{% block content %}{% endblock content %}
         <script src="{% static 'js/bootstrap.min.js' %}"></script>
-        {% block dashboard %}
+        {% block dashboard %}{% endblock %}
+        <script>
+            var ctx = document.getElementById('myChart').getContext('2d');
+            var chart = new Chart(ctx, {
+                // The type of chart we want to create
+                type: 'bar',
 
-        {% endblock %}
+                // The data for our dataset
+                data: {
+                    labels: ['ViettinBank', 'SacomBank', 'ABC', 'VietcomBank'],
+                    datasets: [{
+                        label: 'Doanh số cá ',
+                        backgroundColor:[
+                            'rgb(12,38,124)',
+                            'rgba(123, 22, 78, 123)',
+                            'rgb(128,252,255)',
+                            'rgb(221,51,255)',
+                        ],
+                        borderColor: 'rgb(255, 99, 132)',
+                        data: [215, 241, 360, 230],
+                        borderWidth: 1,
+                        hoverBorderWidth: 3,
+                        hoverBorderColor: 'rgb(255, 255, 255)',
+                    }]
+                },
+
+                // Configuration options go here
+                options: {
+                    title:{
+                        disabled: true,
+                        text: 'Danh sách các ngân hàng '
+                    }
+                }
+            });
+        </script>
     </main>
     {% block scripts %}{% endblock scripts %}
     <footer class="bg-light">

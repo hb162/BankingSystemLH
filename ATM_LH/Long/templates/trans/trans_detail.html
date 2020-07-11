@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+</head>
+<body>
+    {% block title %}Giao dich{% endblock %}
+    {% block content %}
+        <div class="container">
+            Thẻ giao dịch :{{ trans_current.card_no }}<br>
+            Thời gian : {{ trans_current.transaction_time }}<br>
+            Phí : {{ trans_current.balance }}<br>
+            Tham chiếu tài khoản: {{ trans_current.card_no.account_no }}<br>
+            {% if trans_current.transaction_type == 'RT' %}
+                Rút tiền
+                {% elif trans_current.transaction_type == 'CKC' %}
+                Chuyen tien ngoai
+                Tai khoan nhan: {{ trans_current.receive_account }}
+                Noi dung: {{ trans_current.content }}
+                {% else %}
+                Chuyen tien trong
+                Tai khoan nhan: {{ trans_current.receive_account }}
+                Noi dung: {{ trans_current.content }}
+            {% endif %}
+        <br>
+        Các giao dịch gần nhất
+        <br>
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Loai</th>
+                    <th>Thoi gian</th>
+                    <th>So tien</th>
+                    <th>ATM</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in trans_object %}
+                    <tr {% if trans_current.id == a.id %}
+                        class="table-danger"
+                    {% endif %}>
+                        <td>{{ a.id }}</td>
+                        <td>{{ a.transaction_type }}</td>
+                        <td>{{ a.transaction_time }}</td>
+                        <td>{{ a.balance|intcomma }} <strong>VND</strong></td>
+                        <td>{{ a.atm_id }}</td>
+                    </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        </div>
+    {% endblock %}
+</body>
+</html>

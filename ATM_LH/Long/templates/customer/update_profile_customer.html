@@ -1,18 +1,22 @@
 {% extends 'base.html' %}
+{% load static %}
 {% load crispy_forms_tags %}
+{% crispy form form.helper%}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title> {% block title %}Khách hàng{% endblock %}</title>
+{#    <link rel="stylesheet" href="{% static 'css/style.css' %}">#}
 </head>
 <body>
 {% block content %}
     <div class="container">
     <div class="row">
-    <div class="col-sm-3 col-md-4 col-lg-4 text-info mt-4"><h3>Khách hàng</h3>{{ object_customer.customer_id }}</div>
+    <div class="col-sm-3 col-md-8 col-lg-8 text-info mt-4"><h3>Chỉnh sửa thông tin khách hàng</h3></div>
     </div>
-    <form class="form-group" style="background-color: whitesmoke">
+    <form action="{% url 'update_customer' object.id %}" method="post" class="mt-4">
+        {% csrf_token %}
         <div class="form-row pt-3 ml-2 mr-2">
             <div class="form-group col-md-5 col-sm-3">
                     <label><strong>Họ tên đầy đủ </strong></label>
@@ -39,23 +43,6 @@
         </div>
         <div class="form-row ml-2 mr-2">
             <div class="form-group col-md-12">
-                <label><strong>Danh sách các tài khoản </strong></label>
-                <select disabled multiple class="form-control">
-                    {% for acc in object_customer.account_set.all %}
-                        <option class="mb-2">{{ acc }}</option>
-                    {% endfor %}
-                </select>
-                <small>Số lượng tài khoản {{ object_customer.account_set.count }}</small>
-            </div>
-        </div>
-        <div class="form-row ml-2 mr-2">
-            <div class="form-group col-md-12">
-                <label><strong>Ngân hàng </strong></label>
-                <input disabled class="form-control" value="{{ object_customer.branch.bank_id.bank_name }}">
-            </div>
-        </div>
-        <div class="form-row ml-2 mr-2">
-            <div class="form-group col-md-12">
                 <label><strong>Chi nhánh</strong></label>
                 {{ f.branch| as_crispy_field }}
             </div>
@@ -66,13 +53,13 @@
                 {{ f.address| as_crispy_field }}
             </div>
        </div>
-        <div class="form-row pl-4 mt-2">
+        <div class="form-row ml-2 mt-2">
            <div class="form-group col-lg-2 col-md-2">
-               <button type="button" class="btn btn-info"  onclick="location.href='{% url 'update_customer' object_customer.id %}'">
-                   Thay đổi thông tin</button>
+                <button class="btn btn-info" type="submit">Lưu thay đổi</button>
            </div>
         </div>
     </form>
+
     </div>
 {% endblock %}
 </body>

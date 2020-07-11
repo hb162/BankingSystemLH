@@ -3,17 +3,10 @@
 {% block title %}Trang chủ{% endblock title %}
 
 {% block content %}
-	<div class="col-sm-4 col-md-4 col-lg-4 text-info mt-3"><h2>Trang chủ</h2></div>
+	<div class="container-fluid">
+        <div class="col-sm-4 col-md-4 col-lg-4 text-info mt-3"><h2>Trang chủ</h2></div>
+        <canvas id="myChart"></canvas>
+    </div>
 {% endblock content %}
 {% block dashboard %}
-    <div class="btn-group">
-        <button type="button" class="btn btn-primary" value="new_card" onclick="location.href='{% url 'open_card' %}'">
-        Mở thẻ ngân hàng</button>
-        <button type="button" class="btn btn-primary" value="new_account" onclick="location.href='{% url 'open_account' %}'">
-        Mở tài khoản ngân hàng</button>
-        <button type="button" class="btn btn-primary" value="search_customer" onclick="location.href='{% url 'search_customer' %}'">
-        Khách hàng</button>
-        <button type="button" class="btn btn-primary" value="search_account" onclick="location.href='{% url 'show_acc' %}'">
-        Tài khoản</button>
-    </div>
 {% endblock %}

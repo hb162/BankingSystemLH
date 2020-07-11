@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>{% block title %}ATM{% endblock %}</title>
+</head>
+<body>
+{% block content %}
+    <script>
+    function myFunction() {
+        const a = document.getElementById('bank').value;
+        document.getElementById('branch').innerHTML=a;
+      if (a === '01'){
+          var array = ['Chi nhánh Thủ Thiên', 'Chi nhánh Hà Đông', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hai Bà Trưng', 'Chi nhánh Phạm Văn Đồng'];
+      }else if (a == '02'){
+          var array = ['Chi nhánh Ba Đình ', 'Chi nhánh Đống Đa ', 'Chi nhánh Trần Khánh Dư ',
+            'Chi nhánh Củ Chi ', 'Chi nhánh Lý Chiêu Thống '];
+      }else if (a == '03'){
+          var array = ['Chi nhánh Thủ Dầu Một ', 'Chi nhánh Hà Đông', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hồ Tây ', 'Chi nhánh Phạm Văn Đồng'];
+      }else if (a == '04'){
+          var array = ['Chi nhánh Thủ Thiên', 'Chi nhánh Đống Đa ', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hai Bà Trưng', 'Chi nhánh Nguyễn Đức Cảnh '];
+      }else {
+          var array = []
+      }
+        let string = "";
+        for (let i=0; i<array.length; i++){
+          string = string + "<option>"+array[i]+"</option>";
+      }
+      string = "<select name='lol'>"+string+"</select>";
+      document.getElementById('branch').innerHTML=string;
+    }
+    </script>
+{#    design#}
+    <div class="container-fluid">
+        <div class="row mt-4">
+            <div class=" text-info"><h3>ATM</h3></div>
+        </div>
+        <div class="row mt-3">
+            <form action="{% url 'atm_search' %}" method="post" style="background-color: whitesmoke"
+            class="col col-md-10 col-lg-10">
+                {% csrf_token %}
+                <div class="form-group mt-4">
+                    <div class="form-row col-md-10 col-lg-10">
+                            <label><strong>Ngân hàng</strong> </label>
+                             <select id="bank" onchange="myFunction()" name="bank" class="form-control">
+                                <option value="01" selected disabled hidden>Chọn ngân hàng </option>
+                                {% for bank in bank_object %}
+                                    <option value="{{ bank.bank_id }}">{{ bank.bank_name }}</option>
+                                {% endfor %}
+                            </select>
+                    </div>
+                    <div class="form-row col-md-10 col-lg-10 mt-2">
+                            <label><strong>Tên chi nhánh </strong></label>
+                            <select id="branch" name="branch" class="form-control">
+                                <option value="">Chọn chi nhánh </option>
+                            </select>
+                    </div>
+                    <div class="form-row col-md-3 col-lg-3 mt-2">
+                        <label><strong>ATM</strong></label>
+                        <input type="number" name="atm_no" class="form-control" placeholder="Nhập mã ATM ">
+                    </div>
+                    <div class="form-row  mt-4 mb-3 ml-2">
+                        <button type="submit" class="btn btn-outline-info">Tìm kiếm </button>
+                    </div>
+                </div>
+       </form>
+        </div>
+    </div>
+       {% if messages %}
+            {% for message in messages %}
+                 <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ message }}
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+            {% endfor %}
+       {% endif %}
+{% endblock %}
+</body>
+</html>

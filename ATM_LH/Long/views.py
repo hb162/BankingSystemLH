@@ -1,23 +1,35 @@
-from django.shortcuts import render, HttpResponse, Http404, redirect, HttpResponseRedirect
-from django.urls import reverse
-from django.contrib.auth import authenticate, update_session_auth_hash
+from django.shortcuts import render, HttpResponse, Http404, redirect, get_object_or_404
+from django.http import JsonResponse
+from django.contrib.auth import update_session_auth_hash
 from django.db.models import Q
-from django.views import View
+from django.urls import reverse
+from .serializers import AccountSerializer
+from django.views.generic import ListView, DetailView, View, TemplateView, FormView, UpdateView
+from django.contrib import auth
 from django.contrib.auth.forms import PasswordChangeForm
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from Hoang.models import Account, Card, Customer, Transaction
-from Long.models import Employee
-import random
-import datetime
-from datetime import timedelta
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib import messages
-from django.db import models
-from django.core.paginator import Paginator
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from rest_framework.views import APIView
+from .serializers import CustomerSerializer
+from rest_framework.response import Response
+from Hoang.models import Account, Card, Customer, Transaction
+from Long.models import Employee, ATM, HistoryMoney, Bank, Branch
+from random import randint
+import datetime
+from datetime import timedelta
 import string
+from .forms import UpdateProfile, OpenNewCard, OpenNewAccount, ProfileCustomer, SearchCustomer, EmployeeFind
+
 
 # Create your views here.
+
+
+# @decorators.login_required(login_url='/Long/login/')
+class HomePage(TemplateView):
+    template_name = 'home.html'
 
 
 @login_required
@@ -28,6 +40,7 @@ def change_password(request):
             form.save()
             update_session_auth_hash(request, form.user)
             current = User.objects.get(username=request.user)
+            auth.logout(request)
             return render(request, 'password/password_change_success.html', {'name': current.username})
         else:
             return HttpResponse('Please check again')
@@ -35,178 +48,188 @@ def change_password(request):
         form = PasswordChangeForm(user=request.user)
         return render(request, 'password/password_change.html', {'form': form})
 
-# mo them tai khoan ngan hang
 
+class OpenAccountView(View):
 
-def open_new_account(request):
-    if request.method == 'POST':
-        id_no = request.POST['id_no']
-        id_type = request.POST['id_type']
-        try:
-            if Customer.objects.filter(id_no=id_no, id_type=id_type):
-                object_customer = Customer.objects.filter(id_no=id_no).first()
-                max_account_no = 15
-                limit = 100000000
-                balance = 50000
-                account_no = random.randint(10**(max_account_no-1), (10**max_account_no)-1)
-                password = BaseUserManager().make_random_password()
+    @staticmethod
+    def get(request):
+        form = OpenNewAccount()
+        context = {
+            'f': form
+        }
+        return render(request, 'open/form_new_account.html', context)
+
+    @staticmethod
+    def post(request):
+        form = OpenNewAccount(data=request.POST)
+        if form.is_valid():
+            id_no = form.cleaned_data['id_no']
+            id_type = form.cleaned_data['id_type']
+            try:
+                object_customer = Customer.objects.get(id_no=id_no, id_type=id_type)
                 create_day = datetime.datetime.now()
-                end_day = create_day + datetime.timedelta(days=10*365)
-                status = 1
-                Account.objects.create(
-                    account_no=account_no,
-                    password=password,
-                    limit=limit,
-                    balance=balance,
-                    create_day=create_day,
-                    end_day=end_day,
-                    status=status,
-                    customer_id=object_customer
-                )
+                account_no = random_number(15)
+                Account.objects.create(account_no=account_no,
+                                       password=BaseUserManager().make_random_password(),
+                                       limit=100000000,
+                                       balance=50000,
+                                       create_day=create_day,
+                                       end_day=create_day + datetime.timedelta(days=10 * 365),
+                                       status=1,
+                                       customer_id=object_customer
+                                       )
                 messages.add_message(request, messages.SUCCESS, 'Mở thêm tài khoản thành công. Số tài khoản {}'
-                                     .format(account_no))
-                return redirect('open_account')
-            else:
-                messages.add_message(request, messages.WARNING, 'Số thẻ {} không có.'.format(id_no))
-                return redirect('open_account')
-        except:
-            return Http404('Check again')
-    else:
-        return render(request, 'open/open_new_account.html', {})
-
-# mo them the ngan hang
+                                     .format(object_customer.account_set.last()))
+                return redirect('open_account_form')
+            except Customer.DoesNotExist:
+                messages.add_message(request, messages.WARNING, 'Vui lònng kiểm tra lại.')
+                return redirect('open_account_form')
 
 
-def open_new_card(request):
-    if request.method == 'POST':
-        id_account = request.POST['id_account']
-        customer_name_input = request.POST['customer_name']
-        try:
-            if Account.objects.filter(account_no=id_account):
-                account = Account.objects.filter(account_no=id_account).first()
-                object_customer = Customer.objects.filter(customer_id=account.customer_id).first()
-                if object_customer.full_name == customer_name_input:
-                    max_card_number = 16
-                    card_no = random.randint(10**(max_card_number - 1), (10**max_card_number) - 1)
-                    create_date = datetime.datetime.today()
-                    end_date = create_date + timedelta(3650)
-                    card_type = request.POST['card_type']
-                    status = 1
+class OpenCardView(View):
+    template_name = 'open/form_new_card.html'
+
+    def get(self, request):
+        form = OpenNewCard()
+        context = {
+            'f': form
+        }
+        return render(request, self.template_name, context)
+
+    @staticmethod
+    def post(request):
+        form = OpenNewCard(data=request.POST)
+        if form.is_valid():
+            try:
+                account = Account.objects.get(account_no=form.cleaned_data['account_no'])
+                if form.cleaned_data['full_name'] == account.customer.full_name:
+                    create_time = datetime.datetime.today()
+                    card_no = random_number(16)
                     Card.objects.create(card_no=card_no,
                                         pin=BaseUserManager().make_random_password(6, string.digits),
-                                        create_date=create_date, end_date=end_date,
-                                        card_type=card_type,
-                                        status=status,
-                                        account_no=account)
+                                        create_date=create_time,
+                                        end_date=create_time + timedelta(365 * 10),
+                                        card_type=form.cleaned_data['card_type'],
+                                        status=1,
+                                        account_no=account
+                                        )
                     messages.add_message(request, messages.SUCCESS, 'Mở thêm thẻ thành công. Số thẻ {}'.format(card_no))
-                    return redirect('open_card')
+                    return redirect('open_card_form')
                 else:
-                    messages.add_message(request, messages.ERROR, 'Kiểm tra lại tên tài khoản !')
-                    return redirect('open_card')
-            else:
-                messages.error(request, 'Kiểm tra lại số tài khoản !')
-                return redirect('open_card')
-        except:
-             return HttpResponse('Dont have this ID account {}'.format(id_account))
-    else:
-        return render(request, 'open/open_new_card.html', {})
+                    messages.add_message(request, messages.WARNING, 'Kiểm tra lại tên tài khoản !')
+                    return redirect('open_card_form')
+            except Account.DoesNotExist:
+                messages.add_message(request, messages.ERROR,
+                                     'Không có tài khoản {}'.format(form.cleaned_data['account_no']))
+                return redirect('open_card_form')
 
 
-def search_customer_anythings(request):
-    if request.user.is_staff or request.user.is_superuser:
+class SearchCustomerView(ListView):
+    paginate_by = 2
+    template_name = 'customer/customer_result.html'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super(SearchCustomerView, self).get_context_data()
+        context['f'] = SearchCustomer()
+        context['object_customer'] = Customer.objects.all()[0:8]
+        return context
+
+    def get_queryset(self):
+        query = self.request.GET.get('Q')
         object_customer = Customer.objects.all()
-        if request.method == "GET":
-            query = request.GET.get('Q')
-            if query:
-                object_customer = object_customer.filter(
-                    Q(full_name__contains=query) |
-                    Q(address__contains=query) |
-                    Q(gender__contains=query) |
-                    Q(email__contains=query) |
-                    Q(phone_number__exact=query)).distinct()
-                return render(request, 'customer/customer_result.html', {'object_customer': object_customer})
-            # else:
-            #     messages.add_message(request, messages.WARNING, "Không tìm thấy kết quả mong muốn")
-            #     return redirect('search_customer')
-            else:
-                return render(request, 'customer/customer_result.html', {'object_customer': object_customer})
-        elif request.method == "POST":
-            email = request.POST['email']
-            full_name = request.POST['full_name']
-            phone_number = request.POST['phone_number']
-            # gender = request.POST['gender']
-            branch = request.POST['branch']
-            bank = request.POST['bank']
-            if object_customer:
-                if email:
-                    object_customer = object_customer.filter(email__icontains=email)
-                elif phone_number:
-                    object_customer = object_customer.filter(phone_number__exact=phone_number)
-                elif full_name is not None and bank is not None:
-                    object_customer = object_customer.filter(full_name__icontains=full_name,
-                                                             branch__bank_id__bank_name__icontains=bank)
-                elif full_name is not None and bank is not None and branch is not None:
-                    object_customer = object_customer.filter(full_name__icontains=full_name,
-                                                             branch__bank__bank_name__icontains=bank,
-                                                             branch__bank_id__bank_name__icontains=bank)
-                else:
-                    return HttpResponse("ko tim dc")
-                paginator = Paginator(object_customer, 3)
-                page = request.GET.get('page')
-                posts = paginator.get_page(page)
-                return render(request, 'customer/customer_result.html', {'posts': posts,
-                                                                         'object_customer': object_customer})
-            else:
-                return render(request, 'customer/customer_result.html', {'object_customer': object_customer})
+        if query:
+            object_customer = Customer.objects.filter(
+                Q(full_name__icontains=query) |
+                Q(address__icontains=query) |
+                Q(gender__icontains=query) |
+                Q(email__icontains=query) |
+                Q(phone_number__exact=query)).distinct()
+        paginator = Paginator(object_customer, object_customer.count())
+        page = self.request.GET.get('page')
+        try:
+            page_obj = paginator.get_page(page)
+        except PageNotAnInteger:
+            page_obj = paginator.page(1)
+        except EmptyPage:
+            page_obj = paginator.page(paginator.num_pages)
+        return page_obj
+
+    def post(self, request):
+        form = SearchCustomer(data=request.POST)
+        if form.is_valid():
+            email = form.cleaned_data['email']
+            full_name = form.cleaned_data['full_name']
+            phone_number = form.cleaned_data['phone_number']
+            branch = form.cleaned_data['branch']
+            bank = form.cleaned_data['bank']
+            kwargs = {}
+            if email:
+                kwargs['email__icontains'] = email
+            if phone_number:
+                kwargs['phone_number__exact'] = phone_number
+            if full_name is not None and bank is not None:
+                kwargs['full_name__icontains'] = full_name
+                kwargs['branch__bank_id__bank_name__icontains'] = bank
+            if branch is not None:
+                kwargs['branch__branch_name__icontains'] = branch
+            object_customer = Customer.objects.filter(**kwargs)
+            paginator = Paginator(object_customer, 2)
+            page_obj = paginator.get_page(self.request.GET.get('page'))
+            context = {
+                       'object_customer': object_customer,
+                       'page_obj': page_obj,
+                       'f': form
+                       }
+            return render(request, self.template_name, context)
+        return redirect('search_customer')
 
 
-def detail_customer_profile(request, customer_id):
-    if request.method == "GET":
-        object_customer = Customer.objects.get(customer_id=customer_id)
-        full_name = object_customer.full_name
-        gender = object_customer.gender
-        address = object_customer.address
-        birthday = object_customer.birthday
-        phone_number = object_customer.phone_number
-        email = object_customer.email
-        branch_name = object_customer.branch.branch_name
-        bank_name = object_customer.branch.bank_id.bank_name
-        id_type = object_customer.id_type
-        id_no = object_customer.id_no
-        context = {
-            'full_name': full_name,
-            'gender': gender,
-            'address': address,
-            'birthday': birthday,
-            'phone_number': phone_number,
-            'email': email,
-            'branch_name': branch_name,
-            'bank_name': bank_name,
-            'id_type': id_type,
-            'id_no': id_no,
-        }
-        return render(request, 'customer/customer_profile.html', context)
-    else:
-        return render(request, 'customer/customer_profile.html')
+class DetailCustomerView(DetailView):
+    model = Customer
+    template_name = 'customer/customer_profile.html'
+    context_object_name = 'object_customer'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['f'] = ProfileCustomer(instance=self.object)
+        return context
 
 
+@login_required
+def update_profile_customer(request, id_cus):
+    object_customer = get_object_or_404(Customer, pk=id_cus)
+    form = UpdateProfile(data=request.POST or None, instance=object_customer)
+    if request.method == 'POST':
+        if form.is_valid():
+            object_customer = form.save(commit=False)
+            object_customer.save()
+            return redirect('detail_customer_view', id_cus)
+    return render(request, 'customer/update_profile_customer.html', {'f': form, 'object': object_customer})
+
+
+@login_required
 def show_profile_account(request):
     object_account = Account.objects.all()
     if request.method == "POST":
         account_no = request.POST['account_no']
-        # result_account.customer_id
         if object_account.filter(account_no=account_no).exists():
             result_account = object_account.get(account_no=account_no)
             result_customer = Customer.objects.get(customer_id=result_account.customer_id)
             result_card = Card.objects.filter(account_no_id=account_no)
-            result_transaction = Transaction.objects.filter(card_no=result_card)
-            context_object = {
+            result_transaction = Transaction.objects.filter(card_no__account_no=account_no) \
+                .order_by('-transaction_time')
+            money = 0
+            for a in result_transaction:
+                if a.status == '1':
+                    money += a.balance
+            context = {
                 'result_account': result_account,
                 'result_customer': result_customer,
                 'result_card_objects': result_card,
                 'result_transactions': result_transaction,
+                'money': f"{money:,}",
             }
-            return render(request, 'account/show_account.html', context_object)
+            return render(request, 'account/show_account.html', context)
         else:
             messages.add_message(request, messages.ERROR, 'Số tài khoản vừa nhập không tồn tại')
             return render(request, 'account/show_account.html', {'message': messages})
@@ -214,5 +237,238 @@ def show_profile_account(request):
         return render(request, 'account/show_account.html', {'object_account': object_account})
 
 
-def show_profile_atm(request):
-    pass
+@login_required
+def search_atm(request):
+    if request.user.is_staff or request.user.is_superuser:
+        atm_object = ATM.objects.all()
+        bank_object = Bank.objects.all()
+        branch_object = Branch.objects.all()
+        context = {
+            'atm_object': atm_object,
+            'bank_object': bank_object,
+            'branch_object': branch_object,
+        }
+        if request.method == 'POST':
+            branch = request.POST['branch']
+            atm_no = request.POST['atm_no']
+            bank_name = Branch.objects.get(branch_name=branch)
+            try:
+                atm_object = atm_object.get(atm_id=atm_no, employee__branch__bank_id=bank_name.bank_id,
+                                            employee__branch__branch_name=branch)
+                return redirect('atm_profile', atm_id=atm_object.atm_id)
+            except ATM.DoesNotExist:
+                messages.add_message(request, messages.ERROR, "Không tìm thấy ATM mã số {}".format(atm_no))
+                return render(request, 'atm/atm_search.html', context)
+        else:
+            return render(request, 'atm/atm_search.html', context)
+    else:
+        return Http404("You are not login")
+
+
+@login_required
+def atm_profile(request, atm_id):
+    atm = ATM.objects.get(atm_id=atm_id)
+    employee = Employee.objects.get(employee_id=atm.employee_id)
+    trans = Transaction.objects.filter(atm_id=atm_id).order_by('-transaction_time')
+    history_money = HistoryMoney.objects.filter(atm_id=atm_id).order_by('-history_time')[:4]
+    money_result = 0
+    count_success = 0
+    count_error = 0
+    for a in trans:
+        if a.status == '1':
+            count_success += 1
+            money_result += a.balance
+        elif a.status == '0':
+            count_error += 1
+    context1 = {
+        'atm': atm,
+        'employee': employee,
+        'trans': trans,
+        'money_result': money_result,
+        'history_money': history_money,
+        'count_success': count_success,
+        'count_error': count_error,
+    }
+    if request.method == 'POST':
+        time_start = request.POST['time_start']
+        time_end = request.POST['time_end']
+        try:
+            trans = trans.filter(transaction_time__gte=time_start, transaction_time__lte=time_end)
+            money_result = 0
+            count_success = 0
+            count_error = 0
+            for a in trans:
+                if a.status == '1':
+                    count_success += 1
+                    money_result += a.balance
+                elif a.status == '0':
+                    count_error += 1
+            context = {
+                'atm': atm,
+                'employee': employee,
+                'trans': trans,
+                'money_result': money_result,
+                'history_money': history_money,
+                'count_success': count_success,
+                'count_error': count_error,
+            }
+            messages.add_message(request, messages.ERROR, 'Không tim thấy yêu cầu ')
+            return render(request, 'atm/atm_profile.html', context)
+        except Transaction.DoesNotExist:
+            return Http404('Error')
+    return render(request, 'atm/atm_profile.html', context1)
+
+
+@login_required
+def show_trans_account(request, trans_id):
+    trans_current = Transaction.objects.get(id=trans_id)
+    trans_object = Transaction.objects.filter(card_no=trans_current.card_no)
+    context = {
+        'trans_current': trans_current,
+        'trans_object': trans_object,
+    }
+    return render(request, 'trans/trans_detail.html', context)
+
+
+@login_required
+def lock_account(request, account_no):
+    account = Account.objects.filter(account_no=account_no)
+    account.update(status='0')
+    return render(request, 'account/open_close.html')
+
+
+@login_required
+def open_acc(request, account_no):
+    account = Account.objects.filter(account_no=account_no)
+    account.update(status='1')
+    return render(request, 'account/open_close.html')
+
+
+@login_required
+def show_history_money_detail(request, atm_id):
+    history_atm_money = HistoryMoney.objects.filter(atm_id=atm_id)
+    context = {
+        'htr_money': history_atm_money,
+        'atm_id': atm_id
+    }
+    if request.method == 'POST':
+        money = request.POST['money']
+        if int(money) > 500000000 or int(money) < 1000000:
+            messages.add_message(request, messages.ERROR, 'Số tiền phải trong khoảng 1000,000 VND đến 500,000,000 VND ')
+        else:
+            HistoryMoney.objects.create(history_id=random_number(3), history_time=datetime.datetime.now(),
+                                        money=int(money), atm_id=atm_id)
+            messages.add_message(request, messages.SUCCESS, 'Them thanh cong')
+    return render(request, 'atm/atm_add_money.html', context)
+
+
+@login_required
+def update_profile_atm(request, atm_id, branch_id):
+    atm = ATM.objects.filter(atm_id=atm_id)
+    atm_current = ATM.objects.get(atm_id=atm_id)
+    employee_objects = Employee.objects.filter(branch_id=branch_id)
+    # employ_id = set(ATM.objects.filter(employee__branch__bank_id=branch_id).values_list('employee_id'))
+    if request.method == 'POST':
+        address = request.POST['address']
+        employee_input = request.POST['employee']
+        try:
+            atm.update(address=address, employee=employee_input)
+            return HttpResponse('Thanh cong')
+        except ATM.DoesNotExist:
+            messages.add_message(request, messages.WARNING, 'Nhan vien da quan ly ATM')
+    return render(request, 'atm/atm_update.html', {'employee_object': employee_objects,
+                                                   'atm_id': atm_id,
+                                                   'branch_id': branch_id,
+                                                   'atm': atm_current})
+
+
+@login_required
+def trans_detail(request, trans_id):
+    trans_obj = Transaction.objects.get(trans_id=trans_id)
+    card = Card.objects.get(card_no=trans_obj.card_no)
+    context = {
+        'trans_obj': trans_obj,
+        'card': card,
+    }
+    return render(request, 'trans/trans_detail.html', context)
+
+
+def random_number(n):
+    range_start = 10 ** (n - 1)
+    range_end = (10 ** n) - 1
+    return randint(range_start, range_end)
+
+
+class CustomerRudView(APIView):
+
+    @staticmethod
+    def get(request):
+        customer = Customer.objects.all()
+        serializer = CustomerSerializer(customer, many=True)
+        return Response(serializer.data)
+
+    def post(self, request):
+        pass
+
+
+def AccountReview(request, customer_id):
+    try:
+        account = Account.objects.filter(customer_id=customer_id)
+    except Account.DoesNotExist:
+        return HttpResponse(status=404)
+    if request.method == 'GET':
+        serializer = AccountSerializer(account, many=True)
+        return JsonResponse(serializer.data, safe=False)
+    return HttpResponse(status=405)
+
+
+class EmployeeView(View):
+    template_name = 'classbaseview/employee_view.html'
+
+    def get(self, request, employee_id):
+        employee_object = Employee.objects.get(employee_id=employee_id)
+        form = EmployeeFind(instance=employee_object)
+        context = {
+            'employee': employee_object,
+            'f': form
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, employee_id):
+        employee_object = Employee.objects.get(employee_id=employee_id)
+        form = EmployeeFind(data=request.POST, instance=employee_object)
+        if form.is_valid():
+            employee_object = form.save()
+            employee_object.save()
+            messages.add_message(request, messages.SUCCESS, 'Success change name')
+            return redirect('employee', employee_id=employee_id)
+        return Http404('Error')
+
+
+class EmployeeListView(ListView):
+    model = Employee
+    template_name = 'classbaseview/employee_list_view.html'
+    paginate_by = 2
+    context_object_name = 'queryset'
+
+    def get_context_data(self, *, object_list=None, **kwargs):
+        context = super().get_context_data(**kwargs)
+        employee_object = Employee.objects.all()
+        context['employee_object'] = employee_object
+        context['page'] = 'page'
+        print(reverse('employee_listview'))
+        return context
+
+
+class EmployeeDetailView(DetailView):
+    model = Employee
+    template_name = 'classbaseview/employee_detail_view.html'
+
+
+class EmployeeTemplateView(TemplateView):
+    template_name = 'classbaseview/employee_template_view.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(EmployeeTemplateView, self).get_context_data(**kwargs)
+        context['title'] = 'Hello'
+        return context

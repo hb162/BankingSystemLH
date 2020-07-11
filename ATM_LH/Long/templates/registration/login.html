@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-
+{% load crispy_forms_tags %}
 {% block title %}
     Đăng nhập
 {% endblock title %}
@@ -8,19 +8,18 @@
         .form-signin {
           max-width: 380px;
           padding: 15px 35px 45px;
-          margin: 0 auto;
-          margin-top: 30px;
-          background-color: #fff;
-          border: 1px solid rgba(0,0,0,0.1);
+            margin: 30px auto 0;
+            background-color: #fff;
         }
     </style>
 {% endblock stylesheet %}
 {% block content %}
-     <div class="wrapper">
+     <div class="container-fluid">
       <form class="form-signin" method="post">
         {% csrf_token %}
-        {{form}}
-        <button class="btn btn-lg btn-success btn-block" type="submit">Đăng nhập</button>
+          {{ form.username|as_crispy_field }}
+          {{ form.password|as_crispy_field }}
+        <button class="btn btn-outline-success btn-block mt-4" type="submit">Đăng nhập</button>
       </form>
   </div>
 {% endblock content %}

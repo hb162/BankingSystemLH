@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load crispy_forms_tags %}
 <!doctype html>
 <html lang="en">
 <head>
@@ -15,6 +16,32 @@
 </head>
 <body>
 {% block content %}
+     <script>
+    function myFunction() {
+        const a = document.getElementById('bank').value;
+        document.getElementById('branch').innerHTML=a;
+      if (a === '01'){
+          var array = ['Chi nhánh Thủ Thiên', 'Chi nhánh Hà Đông', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hai Bà Trưng', 'Chi nhánh Phạm Văn Đồng'];
+      }else if (a == '02'){
+          var array = ['Chi nhánh Thủ Thiên', 'Chi nhánh Hà Đông', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hai Bà Trưng', 'Chi nhánh Phạm Văn Đồng'];
+      }else if (a == '03'){
+          var array = ['Chi nhánh Thủ Thiên', 'Chi nhánh Hà Đông', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hai Bà Trưng', 'Chi nhánh Phạm Văn Đồng'];
+      }else if (a == '04'){
+          var array = ['Chi nhánh Thủ Thiên', 'Chi nhánh Hà Đông', 'Chi nhánh Bà Triệu',
+            'Chi nhánh Hai Bà Trưng', 'Chi nhánh Phạm Văn Đồng'];
+      }else {
+          var array = []
+      }
+        let string = "";
+        for (let i=0; i<array.length; i++){
+          string = string + "<option>"+array[i]+"</option>";
+      }
+      string = "<select name='lol'>"+string+"</select>";
+      document.getElementById('branch').innerHTML=string;
+    }</script>
     <div class="row mt-3 pb-3">
         <div class="col-sm-3 col-md-3 col-lg-3 text-info"><h3>Khách hàng</h3></div>
         <div class="col-sm-5 col-md-5 col-lg-5"></div>
@@ -42,53 +69,81 @@
                 <div class="form-row">
                     <div class="form-group col-md-5 mt-3 ml-4">
                         <label><strong>Khách hàng</strong></label>
-                        <input type="text" class="form-control" name="full_name"
-                               placeholder="Nhập tên khách hàng">
+                            {{ f.full_name|as_crispy_field }}
                     </div>
-                    <div class="form-group col-md-1"></div>
-                     <div class="form-group col-md-5 mt-3">
+                     <div class="form-group col-md-6 mt-3">
                          <label><strong>Email</strong></label>
-                        <input type="text" class="form-control" name="email"
-                               placeholder="Nhập email">
+                            {{ f.email|as_crispy_field }}
                     </div>
                 </div>
                  <div class="form-row">
                     <div class="form-group col-md-5 ml-4">
                         <label><strong>Ngân hàng</strong></label>
-                        <input type="text" class="form-control" name="bank"
-                               placeholder="Nhập tên ngân hàng">
+                            {{ f.bank|as_crispy_field }}
                     </div>
-                    <div class="form-group col-md-1"></div>
-                     <div class="form-group col-md-5">
+{#                    <div class="form-group col-md-1"></div>#}
+                     <div class="form-group col-md-6">
                         <label><strong>Chi nhánh</strong></label>
-                        <input type="text" class="form-control" name="branch"
-                               placeholder="Nhập tên chi nhánh">
+                            {{ f.branch|as_crispy_field }}
                     </div>
                 </div>
                  <div class="form-row">
                     <div class="form-group col-md-5 ml-4">
                         <label><strong>Số điện thoại</strong></label>
-                        <input type="text" class="form-control" name="phone_number"
-                               placeholder="Nhập số điện thoại">
+                            {{ f.phone_number|as_crispy_field }}
                     </div>
                 </div>
             </div>
             <div class="col text-center pb-3">
-                <button type="submit" class="btn btn-info cen">Lọc khách hàng</button>
+                <button type="submit" class="btn btn-outline-info">Lọc khách hàng</button>
             </div>
     </form>
     </div>
     <br>
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.level ==  DEFAULT_MESSAGE_LEVELS.ERROR  %}
-                <div class="alert alert-danger">
-                    {{ message }}
-                </div>
+    {% if page_obj.object_list.count == 0 %}
+        <div class="alert alert-warning alert-dismissible fade show" role="alert">
+          <strong>Không tìm thấy kết quả!</strong>.
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        {% else %}
+        <div class="row">
+        <div class="col col-sm-2 col-md-5 col-lg-5"></div>
+         <ul class="pagination">
+            {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1{% if request.GET.Q %}
+                    &Q={{ request.GET.Q }}
+                    {% endif %}">&laquo;</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.Q %}
+                        &Q={{ request.GET.Q }}
+                    {% endif %}">&lsaquo;</a>
+                </li>
             {% endif %}
-        {% endfor %}
+            {% for a in page_obj.paginator.page_range  %}
+                {% if page_obj.number == a %}
+                    <li class="page-item active"><a class="page-link">{{ a }}</a></li>
+                    {% else %}
+                    <li class="page-item"><a class="page-link"
+                    href="?page={{ a }}{% if request.GET.Q %}
+                       &Q={{ request.GET.Q }}
+                    {% endif %}">{{ a }}</a></li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.Q %}
+                &Q={{ request.GET.Q }}
+                {% endif %}">&rsaquo;</a></li>
+                <li class="page-item"><a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.Q %}
+                &Q={{ request.GET.Q }}
+                {% endif %}">&raquo;</a></li>
+            {% endif %}
+        </ul>
+       </div>
     {% endif %}
-
     <div class="row">
     <div class="container-fluid">
         <div class="row">
@@ -96,25 +151,23 @@
                 {% if object_customer %}
             <div class="container">
                 <div class="row text-center">
+                    <small>Tìm thấy được {{ page_obj.paginator.count }} kết quả. </small>
                     <table class="table table-hover table-position table-bordered">
                         <thead class="thead-light">
                             <tr>
                                 <th scope="col">Mã</th>
                                 <th scope="col">Họ tên</th>
-{#                                <th scope="col">Ngày sinh </th>#}
                                 <th scope="col">Giới tính</th>
-{#                                <th scope="col">Địa chỉ</th>#}
                                 <th scope="col">Số điện thoại</th>
                                 <th scope="col">Email</th>
                                 <th scope="col">Chỉnh sửa</th>
                             </tr>
                         </thead>
                         <tbody>
-                            {% for object in object_customer %}
+                            {% for object in page_obj %}
                                 <tr>
                                     <td>{{ object.customer_id }}</td>
-                                    <td><a class= 'golink' href="{% url 'profile_customer' object.customer_id %}">{{ object.full_name }}</a></td>
-{#                                    <td>{{ object.birthday}}</td>#}
+                                    <td><a class= 'golink' href="{% url 'detail_customer_view' object.id %}">{{ object.full_name }}</a></td>
                                     {% if object.gender == 'M' %}
                                             <td>Nam</td>
                                         {% elif object.gender == 'W' %}
@@ -122,16 +175,16 @@
                                         {% else %}
                                             <td>Không giới tính</td>
                                     {% endif %}
-{#                                    <td>{{ object.address }}</td>#}
                                     <td>{{ object.phone_number }}</td>
                                     <td>{{ object.email }}</td>
-                                    <td><button type="button" class="btn btn-outline-primary">
+                                    <td><button type="button" class="btn btn-outline-primary"
+                                    onclick="location.href='{% url 'update_customer' object.customer_id %}'">
                                         Edit</button></td>
                                 </tr>
                             {% endfor %}
-
                         </tbody>
                     </table>
+
                 </div>
             </div>
     {% endif %}

@@ -1,14 +1,54 @@
+{% load static %}
+<head>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
 <nav class="nav navbar-light bg-light">
   <form class="form">
     {% if request.user.is_authenticated %}
-            <div class="btn-group">
-                <a href="{% url 'logout' %}" class="btn btn-secondary btn-sm" role="button"><small>Đăng xuất</small></a>
-                <a href="{% url 'change_password' %}" class="btn btn-secondary btn-sm" role="button" >
-                    <small>Thay đổi mật khẩu</small></a>
-            </div>
-            <div class="text-primary" style="float: right"><small>Chào <strong>{{request.user.username}}</strong></small></div>
-    {% else %}
-      <a href="{% url 'login' %}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Đăng nhập</a>
+        <div class="row">
+        <ul class="nav nav-fill nav-justified link_all">
+                <li class="nav-item">
+                    <a class="nav-link link_a" href="{% url 'home' %}">
+                        <h2><strong>AdminBank</strong></h2>
+                    </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Quản lý </a>
+                    <div class="dropdown-menu">
+                        <a class="dropdown-item" href="{% url 'search_customer' %}">Khách hàng </a>
+                        <a class="dropdown-item" href="{% url 'employee_listview' %}">Nhân viên </a>
+                        <a class="dropdown-item" href="{% url 'show_acc' %}">Tài khoản </a>
+                        <a class="dropdown-item" href="{% url 'atm_search' %}">ATM </a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Khác...</a>
+                    </div>
+                </li>
+                <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" data-toggle = 'dropdown' href="#" role="button" aria-haspopup="true" aria-expanded="false">Mở thẻ </a>
+                        <div class="dropdown-menu">
+                            <a class="dropdown-item" role="button" href="{% url 'open_account_form' %}">Tài khoản </a>
+                            <a class="dropdown-item" role="button" href="{% url 'open_card_form' %}">Thẻ </a>
+                        </div>
+                </li>
+                <li class="nav-item">
+                        <a class="nav-link" href="#">Giao dịch </a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">Tài khoản</a>
+                    <div class="dropdown-menu">
+                        <a href="{% url 'logout' %}" class="dropdown-item" role="button">Đăng xuất</a>
+                        <a href="{% url 'change_password' %}" class="dropdown-item" role="button" >Thay đổi mật khẩu</a>
+                        <a class="dropdown-item" href="#">Something else here</a>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item" href="#">Separated link</a>
+                    </div>
+                </li>
+        </ul>
+{#            <div class="col col-sm-1 col-md-1 col-lg-1"></div>#}
+            <div class="text-primary ml-2 col-lg-2 col-md-2"><small>Chào <strong>{{request.user.username}}</strong></small></div>
+        </div>
+{#    {% else %}#}
+{#      <a href="{% url 'login' %}" class="btn btn-primary btn-sm active" role="button" aria-pressed="true">Đăng nhập</a>#}
     {% endif %}
   </form>
 </nav>

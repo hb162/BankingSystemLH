@@ -1,71 +1,71 @@
-{% extends 'base.html' %}
-<!doctype html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport"
-          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <style>
-        .form_open{
-            border-style: solid;
-            border-color: #000000;
-            color: #ffeeba;
-            margin: fill;
-            padding: auto;
-            text-align: center;
-            width: auto;
-        }
-    </style>
-</head>
-<body>
-    {% block title %}Mở tài khoản{% endblock %}
-    {% block content %}
-         <div class="col-sm-5 col-md-5 col-lg-5 text-info mt-3"><h3>Mở thêm tài khoản</h3></div>
-    {% if messages %}
-        {% for message in messages %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endif %}
-            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                <div class="alert alert-success alert-dismissible fade show" role="alert">
-                    {{ message }}
-                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-            {% endif %}
-        {% endfor %}
-    {% endif %}
-    <form method="post" action="{% url 'open_account' %}" class="needs-validation" novalidate>
-        {% csrf_token %}
-        <div class="form-group">
-           <div class="form-row">
-               <div class="form-group col-md-5 mt-3 ml-4">
-                   <label><strong> Loại giấy tờ </strong></label>
-                        <select class="form-control form-control-sm mt-1" name="id_type">
-                        <option value="CMND">Chứng minh nhân dân</option>
-                        <option value="TCC">Thẻ căn cước</option>
-                        <option value="HC">Hộ chiếu</option>
-                    </select>
-               </div>
-           </div>
-        <div class="form-group">
-            <div class="form-row ">
-                <div class="form-group col-md-5 ml-4">
-                    <label><strong>Số thẻ</strong></label>
-                    <input  placeholder="Số thẻ " type="number" name="id_no" class="form-control">
-                </div>
-            </div>
-        </div>
-            <button type="submit" class="btn btn-info ml-4">Đăng ký </button>
-        </div>
-    </form>
-    {% endblock %}
-</body>
-</html>
+{#{% extends 'base.html' %}#}
+{#<!doctype html>#}
+{#<html lang="en">#}
+{#<head>#}
+{#    <meta charset="UTF-8">#}
+{#    <meta name="viewport"#}
+{#          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">#}
+{#    <meta http-equiv="X-UA-Compatible" content="ie=edge">#}
+{#    <style>#}
+{#        .form_open{#}
+{#            border-style: solid;#}
+{#            border-color: #000000;#}
+{#            color: #ffeeba;#}
+{#            margin: fill;#}
+{#            padding: auto;#}
+{#            text-align: center;#}
+{#            width: auto;#}
+{#        }#}
+{#    </style>#}
+{#</head>#}
+{#<body>#}
+{#    {% block title %}Mở tài khoản{% endblock %}#}
+{#    {% block content %}#}
+{#         <div class="col-sm-5 col-md-5 col-lg-5 text-info mt-3"><h3>Mở thêm tài khoản</h3></div>#}
+{#    {% if messages %}#}
+{#        {% for message in messages %}#}
+{#            {% if message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}#}
+{#                <div class="alert alert-danger alert-dismissible fade show" role="alert">#}
+{#                    {{ message }}#}
+{#                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">#}
+{#                        <span aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#            {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}#}
+{#                <div class="alert alert-success alert-dismissible fade show" role="alert">#}
+{#                    {{ message }}#}
+{#                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">#}
+{#                        <span aria-hidden="true">&times;</span>#}
+{#                    </button>#}
+{#                </div>#}
+{#            {% endif %}#}
+{#        {% endfor %}#}
+{#    {% endif %}#}
+{#    <form method="post" action="{% url 'open_account' %}" class="needs-validation" novalidate>#}
+{#        {% csrf_token %}#}
+{#        <div class="form-group">#}
+{#           <div class="form-row">#}
+{#               <div class="form-group col-md-5 mt-3 ml-4">#}
+{#                   <label><strong> Loại giấy tờ </strong></label>#}
+{#                        <select class="form-control form-control-sm mt-1" name="id_type">#}
+{#                        <option value="CMND">Chứng minh nhân dân</option>#}
+{#                        <option value="TCC">Thẻ căn cước</option>#}
+{#                        <option value="HC">Hộ chiếu</option>#}
+{#                    </select>#}
+{#               </div>#}
+{#           </div>#}
+{#        <div class="form-group">#}
+{#            <div class="form-row ">#}
+{#                <div class="form-group col-md-5 ml-4">#}
+{#                    <label><strong>Số thẻ</strong></label>#}
+{#                    <input  placeholder="Số thẻ " type="number" name="id_no" class="form-control">#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#            <button type="submit" class="btn btn-outline-info ml-4">Đăng ký </button>#}
+{#        </div>#}
+{#    </form>#}
+{#    {% endblock %}#}
+{#</body>#}
+{#</html>#}

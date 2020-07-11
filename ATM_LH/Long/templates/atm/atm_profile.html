@@ -1,0 +1,132 @@
+{% extends 'base.html' %}
+{% load static %}
+{% load humanize %}
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+</head>
+<body>
+    {% block title %}ATM{% endblock %}
+    {% block content %}
+        <div class="container">
+            <h3 class="text-info mt-4 mb-3"><strong>Mã số ATM {{ atm.atm_id }}<br></strong></h3>
+            <form class="border-bottom  mb-4">
+                <div class="form-row">
+                    <div class="col col-md-3 col-lg-3 col-sm-6">
+                    <div class="form-group mt-3">
+                        {% if atm.status == '1' %}
+                            <p class="text-success ml-5">Hoạt động </p>
+                            {% else %}
+                            <p class="text-warning  ml-5">Bảo trì </p>
+                        {% endif %}
+                        <img src="{% static 'img/atm1.png' %}" height="160px">
+                    </div>
+                </div>
+                <div class="col col-md-4 col-lg-4 mt-5">
+                    <label class="mr-2"><strong>Địa chỉ</strong></label>{{ atm.address }}<br>
+                    <label class="mr-2"><strong>Nhân viên quản lý</strong></label>{{ employee.full_name }}<br>
+                    <label class="mr-2"><strong>Số tiền trong ATM</strong></label> {{ atm.atm_balance.real|intcomma }}
+                    <strong>VND</strong><br>
+                    <label class="mr-2"><strong>Số lượng giao dịch</strong></label> {{ trans.count }}<br>
+                   <input  class="btn btn-outline-info mt-2" onclick="location.href='{% url 'update_atm' atm.atm_id atm.employee.branch_id %}'" value="Chỉnh sửa " </input>
+                </div>
+                <div class="col col-md-5 col-lg-5 mt-4">
+                    <a href="{% url 'history_atm' atm.atm_id %}"><small>Lịch sử đổ tiền</small></a>
+                    <table class="table table-hover text-center table-bordered">
+                        <thead class="thead-light">
+                            <tr>
+                                <th>Mã</th>
+                                <th>Thời gian</th>
+                                <th>Số tiền</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for i in history_money %}
+                            <tr>
+                                <td>{{ i.history_id }}</td>
+                                <td>{{ i.history_time }}</td>
+                                <td>{{ i.money|intcomma }} <strong>VND</strong></td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </form>
+        </div>
+        <small>Lịch sử giao dịch</small>
+        <form method="post" action="{% url 'atm_profile' atm.atm_id %}" class="border pt-3">
+            {% csrf_token %}
+                <div class="form-group col col-md-12 col-lg-12 justify-content-center">
+                    <div class="row justify-content-center">
+                        <div class="col col-md-3 col-lg-3">
+                        <input type="date" name="time_start" class="form-control-sm">
+                        </div>
+                        <div class="col col-md-1 col-lg-1">&#8594;</div>
+                    <div class="col col-md-3 col-lg-3">
+                        <input type="date" name="time_end" class="form-control-sm">
+                    </div>
+                    </div>
+                    <button class="btn btn-outline-success" type="submit">Search</button>
+                </div>
+        </form>
+        {% if trans.count != 0 %}
+            <table class="table table-hover text-center table-bordered table-sm">
+                <thead class="thead-light">
+                    <tr>
+                        <th>Loại giao dịch</th>
+                        <th>Thời gian</th>
+                        <th>Số tiền</th>
+                        <th>Thẻ</th>
+                        <th>Trạng thái</th>
+                        <th>Chi tiết</th>
+                    </tr>
+                </thead>
+                    {% for a in trans %}
+                        {% if a.status == '1' %}
+                            <tr class="table-success">
+                            <td>{{ a.get_transaction_type_display }}</td>
+                            <td>{{ a.transaction_time }}</td>
+                            <td>{{ a.balance |intcomma}}<strong class="ml-1">VND</strong></td>
+                            <td>{{ a.card_no }}</td>
+                            <td><div class="text-success">Thành công</div></td>
+                            <td><button class="btn btn-outline-success btn-sm" onclick="location.href='{% url 'trans' a.id %}'">
+                                Detail</button></td>
+                            </tr>
+                            {% else %}
+                             <tr class="table-danger">
+                            <td>{{ a.transaction_type }}</td>
+                            <td>{{ a.transaction_time }}</td>
+                            <td>{{ a.balance |intcomma}}<strong class="ml-1">VND</strong></td>
+                            <td>{{ a.card_no }}</td>
+                            <td><div class="text-danger">Thất bại</div></td>
+                            <td><button class="btn btn-outline-danger btn-sm" onclick="location.href='{% url 'trans' a.id %}'">
+                                Detail</button></td>
+                            </tr>
+                        {% endif %}
+                    {% endfor %}
+            </table>
+            <div class="row">
+                <div class="text-info col col-md-3 col-lg-3">Tổng số tiền giao dịch:</div> {{ money_result|intcomma }}<strong class="ml-1">VND</strong>
+                <div class="text-right col col-md-9 col-lg-9">
+                    <p class="text-success">Giao dịch thành công {{ count_success }}</p>
+                    <p class="text-danger">Giao dịch thất bại {{ count_error }}</p>
+                </div>
+            </div>
+            {% elif trans.count == 0 %}
+                {% if messages %}
+                    {% for message in messages %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">{{ message }}
+                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                <span aria-hidden="true">&times;</span></button>
+                        </div>
+                {% endfor %}
+                {% endif %}
+        {% endif %}
+    {% endblock %}
+</body>
+</html>

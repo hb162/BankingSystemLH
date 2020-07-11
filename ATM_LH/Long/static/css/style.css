@@ -1,6 +1,17 @@
+@import url('https://fonts.googleapis.com/css?family=Indie+Flower&display=swap');
 body,html{
-  color: #fff;
   height: 100%;
   margin: 0;
-  background: #d5e3ed;
+  font-size: 18px;
 }
+.link_a{
+  color: gray;
+  font-family: "Indie Flower";
+}
+.link_a:hover{
+  color: darkgray;
+}
+
+/*.asteriskField{*/
+/*  display: none;*/
+/*}*/

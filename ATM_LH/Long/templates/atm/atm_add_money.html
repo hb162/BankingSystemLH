@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% load humanize %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    {% block title %}ATM{% endblock %}
+    {% block content %}
+        <h3>ATM {{ atm_id }}</h3>
+        <table class="text-center table-bordered">
+            <thead>
+                <tr>
+                    <td>ID</td>
+                    <td>Thoi gian</td>
+                    <td>Tien do</td>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in htr_money %}
+                    <tr>
+                        <td>{{ a.history_id }}</td>
+                        <td>{{ a.history_time }}</td>
+                        <td>{{ a.money| intcomma }}VND</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <form method="post" action="{% url 'history_atm' atm_id %}">
+            {% csrf_token %}
+            <label>Nhap so tien vao</label>
+            <input type="number" required placeholder="Nhap so tien" name="money">
+            <input type="submit" value="Submit">
+        </form>
+        {% if messages %}
+            {% for message in messages %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                    {{ message }}
+                {% endif %}
+                {% if message.level == DEFAULT_MESSAGE_LEVELS.ERROR%}
+                    {{ message }}
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+    {% endblock %}
+</body>
+</html>

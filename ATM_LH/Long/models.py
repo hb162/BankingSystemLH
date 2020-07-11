@@ -17,7 +17,7 @@ class Bank(models.Model):
     branches = models.ManyToManyField(Province, through="Branch")
 
     def __str__(self):
-        return '{}{}'.format(self.bank_name, self.bank_id)
+        return '{}'.format(self.bank_name)
 
 
 class Branch(models.Model):
@@ -28,7 +28,7 @@ class Branch(models.Model):
     branch_address = models.TextField()
 
     def __str__(self):
-        return self.branch_id, self.branch_name
+        return '{} {}'.format(self.branch_id, self.branch_name)
 
 
 class Employee(models.Model):
@@ -37,9 +37,10 @@ class Employee(models.Model):
     full_name = models.CharField(max_length=50)
     username = models.CharField(max_length=32)
     emp_password = models.CharField(max_length=50)
+    emp_job = models.CharField(max_length=50, default='A')
 
     def __str__(self):
-        return self.full_name, self.branch_id
+        return '{} {}'.format(self.employee_id, self.full_name)
 
 
 class ATM(models.Model):
